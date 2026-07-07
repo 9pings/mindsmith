@@ -10,7 +10,7 @@
   "scripts": {
     "start": "node bin/skynet-client serve",
     "pull": "node bin/skynet-client pull",
-    "test": "node --test test/*.test.js"
+    "test": "node --test --test-force-exit test/*.test.js"
   },
   "dependencies": {
     "skynet-graph": "file:../Skynet-NRG"
