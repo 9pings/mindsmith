@@ -1,0 +1,4 @@
+node_modules/
+*.log
+.skynet-stock.json
+sgc/
