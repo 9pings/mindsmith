@@ -79,6 +79,7 @@ test('appliance — pull → load THROUGH the gates → OpenAI wire: escalate th
 		});
 		const r1 = await complete();
 		assert.equal(r1.headers.get('x-sg-served-from'), 'frontier');
+		assert.equal(r1.headers.get('x-sg-sgc-version'), 'm@1.0.0,units@1.0.0', 'the loaded catalog state (stock freshness) rides every completion');
 		assert.equal((await r1.json()).choices[0].message.content, 'verified: boiling point of water?');
 		const r2 = await complete();
 		assert.equal(r2.headers.get('x-sg-served-from'), 'local', 'the repeat came from the stock');
