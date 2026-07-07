@@ -13,6 +13,6 @@
     "test": "node --test test/*.test.js"
   },
   "dependencies": {
-    "skynet-graph": "file:../skynet-graph"
+    "skynet-graph": "file:../Skynet-NRG"
   }
 }
