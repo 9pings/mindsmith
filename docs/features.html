@@ -210,6 +210,13 @@
             margin <span class="num">≥3</span> on free/declared frames, or
             <span class="num">≥2</span> on a certified perimeter (24/24). Below the bound the
             output is counts + coverage + UNDECIDED — never a fake weighing.</li>
+          <li><strong>Benched vs the model's own think mode</strong> (N=24, re-runs bit-identical):
+            on side-judgment over unlabeled pools, the naive call scores
+            <span class="num">13/24 ≈ chance</span> and a native 1024-token think budget
+            <em>also</em> scores <span class="num">13/24</span> — 11 confident wrong verdicts each.
+            The critical mind on the same pools: <span class="num">0 wrong verdicts</span> —
+            <span class="num">24/24</span> mechanical with a declared frame, honest UNDECIDED
+            without one (~6&nbsp;s per debate).</li>
         </ul></dd>
 
         <dt>The iteration contract</dt>
