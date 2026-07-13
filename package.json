@@ -1,18 +1,23 @@
 {
-  "name": "skynet-dequantizer",
-  "version": "0.2.0",
+  "name": "wala",
+  "version": "0.1.0",
   "license": "AGPL-3.0-or-later",
   "author": "Nathanael Braun <pp9ping@gmail.com>",
   "description": "Your low-quant local model, repaired and steered like a bigger one — an OpenAI-compatible local proxy over the skynet-graph engine + your own room of verified .sgc stocks. Nothing leaves the machine (no-egress proven on real sockets).",
+  "keywords": ["llm", "local-llm", "openai-compatible", "proxy", "mcp", "gguf", "quantization", "offline", "agpl", "skynet-graph"],
   "main": "./lib/app.js",
   "bin": {
-    "skynet-dequantizer": "bin/skynet-dequantizer"
+    "wala": "bin/wala"
+  },
+  "files": ["bin", "lib", "README.md", "LICENSE"],
+  "engines": {
+    "node": ">=18"
   },
   "scripts": {
-    "start": "node bin/skynet-dequantizer serve",
+    "start": "node bin/wala serve",
     "test": "node --test --test-force-exit test/*.test.js"
   },
   "dependencies": {
-    "skynet-graph": "file:../skynet-graph"
+    "skynet-graph": "^1.2.0"
   }
 }

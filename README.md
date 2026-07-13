@@ -1,4 +1,4 @@
-# skynet-dequantizer
+# wala
 
 > **Pre-launch — nothing is field-adopted yet (rung 6/6 is empty on every bar below).**
 > We publish maturity per feature and keep refuted claims on the page. Honesty is the product's USP,
@@ -25,12 +25,12 @@ gate, never written.
 
 ```bash
 # Pre-launch note: not on npm yet. Until the release:
-#   git clone <this repo> && cd skynet-dequantizer && npm install && npm test   # 26/26, GPU-free
-# Once published, the same commands work via:  npm i -g skynet-dequantizer   or   npx skynet-dequantizer
+#   git clone <this repo> && cd wala && npm install && npm test   # 26/26, GPU-free
+# Once published, the same commands work via:  npm i -g wala   or   npx wala
 
 # 1 — serve (embedded gguf as the escalation):
-FRONTIER_MODEL=/path/model.gguf skynet-dequantizer serve --room ./sgc
-# → skynet-dequantizer → http://127.0.0.1:4747/v1   (OpenAI-compatible)
+FRONTIER_MODEL=/path/model.gguf wala serve --room ./sgc
+# → wala → http://127.0.0.1:4747/v1   (OpenAI-compatible)
 
 # 2 — point ANY OpenAI client at it (official SDKs, LangChain, Open WebUI, curl):
 #    baseURL = http://127.0.0.1:4747/v1     apiKey = anything
@@ -41,13 +41,13 @@ curl -si http://127.0.0.1:4747/v1/chat/completions \
 #   x-sg-served-from: local|frontier · x-sg-arm · x-sg-cost · x-sg-coverage · x-sg-saved · x-sg-sgc-version
 
 # 3 — your stock rooms (local .sgc mini-repos, gate-checked):
-skynet-dequantizer rooms list                          # inventory: name@version, classes, sha256, ❄ frozen
-skynet-dequantizer rooms import ./fin-tables-stock.sgc # gate-checked (a bad bundle never lands)
-skynet-dequantizer rooms freeze fin-tables-stock       # writes the auditable sha256 dossier
-skynet-dequantizer rooms export fin-tables-stock ./out # bundle + dossier, ready to share
+wala rooms list                          # inventory: name@version, classes, sha256, ❄ frozen
+wala rooms import ./fin-tables-stock.sgc # gate-checked (a bad bundle never lands)
+wala rooms freeze fin-tables-stock       # writes the auditable sha256 dossier
+wala rooms export fin-tables-stock ./out # bundle + dossier, ready to share
 
 # 4 — or as MCP tools for an agent host (Claude Code, any MCP client):
-claude mcp add skynet -- skynet-dequantizer mcp --routing routing.json
+claude mcp add wala -- wala mcp --routing routing.json
 # tools: ask · drift · metrics · lattice_load · hint · propose · critique
 ```
 

@@ -1,19 +1,19 @@
 #!/usr/bin/env node
 'use strict';
-// skynet-dequantizer — your low-quant local model, repaired and steered like a bigger one. Nothing leaves
+// wala — your low-quant local model, repaired and steered like a bigger one. Nothing leaves
 // the machine. An OpenAI-compatible endpoint over the skynet-graph engine + your local room of verified
 // `.sgc` stocks (community model: build/freeze/share/import your own — no catalog, no subscription).
 //
-//   skynet-dequantizer serve  [--port N] [--store <f.json>] [--room <dir>]
+//   wala serve  [--port N] [--store <f.json>] [--room <dir>]
 //                             escalation, either:
 //                               N-tier routing: --routing <config.json> [--policy no-egress|allow-mid|allow-all]
 //                                               (tiers = backend presets + egress class; default no-egress)
 //                               single frontier: env FRONTIER_MODEL=<path.gguf> (embedded) | LLM_BASE (endpoint)
 //                             optional env LOCAL_MODEL=<path.gguf> (semantic coverage: paraphrases hit the stock)
-//   skynet-dequantizer mcp    same flags/env as serve, NO http socket — the MCP tool surface (stdio) over the
+//   wala mcp    same flags/env as serve, NO http socket — the MCP tool surface (stdio) over the
 //                             same verified stock + escalation; stdout = protocol.
-//                             Register:  claude mcp add skynet -- skynet-dequantizer mcp --routing <config.json>
-//   skynet-dequantizer rooms  list | import <file.sgc> | export <name> <destDir> | freeze <name>   [--room <dir>]
+//                             Register:  claude mcp add wala -- wala mcp --routing <config.json>
+//   wala rooms  list | import <file.sgc> | export <name> <destDir> | freeze <name>   [--room <dir>]
 //                             your local SGC room: inventory (sha256 + frozen dossiers), gate-checked import
 //                             (a malformed bundle is refused, never written), export with dossier, freeze
 //                             (writes the auditable sha256 dossier). Forge new stocks with `sg forge` (skynet-graph).
@@ -63,7 +63,7 @@ if ( cmd === 'rooms' ) {
 		} else if ( sub === 'freeze' ) {
 			const r = rooms.freeze(roomDir, argv[2] || '');
 			console.log('frozen: ' + r.dossier + '  sha256 ' + r.sha256.slice(0, 16) + '…  (' + r.classes + ' classes)');
-		} else { console.error('usage: skynet-dequantizer rooms list|import <file>|export <name> <dest>|freeze <name> [--room <dir>]'); process.exit(1); }
+		} else { console.error('usage: wala rooms list|import <file>|export <name> <dest>|freeze <name> [--room <dir>]'); process.exit(1); }
 	} catch ( e ) { console.error(e.message); process.exit(1); }
 } else if ( cmd === 'serve' || cmd === undefined ) {
 	const app = buildApp(resolveEscalation('serve'), {
@@ -73,7 +73,7 @@ if ( cmd === 'rooms' ) {
 	});
 	app.start(( first ) => {
 		const l = first.loaded;
-		console.log('skynet-dequantizer → http://127.0.0.1:' + (Number(flag('port')) || 4747) + '/v1   (OpenAI-compatible)');
+		console.log('wala → http://127.0.0.1:' + (Number(flag('port')) || 4747) + '/v1   (OpenAI-compatible)');
 		console.log('room ' + roomDir + ': methods=' + l.methods.length + ' lattice=' + l.lattice.length + (l.skipped.length ? ' skipped=' + l.skipped.length : ''));
 	}).catch(( e ) => { console.error(e.message); process.exit(1); });
 	process.on('SIGINT', () => { app.stop(); process.exit(0); });
@@ -91,14 +91,14 @@ if ( cmd === 'rooms' ) {
 		if ( mf ) { try { Object.assign(wiring, stockWiring(JSON.parse(require('fs').readFileSync(require('path').join(app.sgcDir, mf), 'utf8')))); } catch ( e ) { console.error('room stock lanes unavailable: ' + e.message); } }
 		const server = createMcpServer({
 			tools: defaultTools(wiring),
-			serverInfo: { name: 'skynet-dequantizer', version: require('../package.json').version }
+			serverInfo: { name: 'wala', version: require('../package.json').version }
 		});
 		startMcpStdio({ server });
 		const l = first.loaded;
-		console.error('skynet-dequantizer mcp ready — tools: ' + server.tools.map(( t ) => t.name).join(', ')
+		console.error('wala mcp ready — tools: ' + server.tools.map(( t ) => t.name).join(', ')
 			+ '  · room: methods=' + l.methods.length + ' lattice=' + l.lattice.length);
 	}).catch(( e ) => { console.error(e.message); process.exit(1); });
 } else {
-	console.error('usage: skynet-dequantizer serve|mcp|rooms …');
+	console.error('usage: wala serve|mcp|rooms …');
 	process.exit(1);
 }
