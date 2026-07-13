@@ -35,7 +35,11 @@ if ( !cmd || cmd === '--help' || cmd === '-h' || cmd === 'help' ) {
 		'     escalation (ONE required):  --routing <config.json> [--policy no-egress|allow-mid|allow-all]',
 		'                               | env FRONTIER_MODEL=<path.gguf>  (embedded gguf — needs `npm install node-llama-cpp`)',
 		'                               | env LLM_BASE=<url>              (any OpenAI-compatible endpoint)',
-		'     optional: env LOCAL_MODEL=<path.gguf>. On WSL, export',
+		'     single model (ONE VRAM load = LLM server + the graph):  --model <path.gguf>',
+		'        — user answers run WITH think; the graph (coverage · critique · propose) runs no-think, same load.',
+		'        model opts:   --ctx <N>   --gpu <auto|cuda|metal|vulkan|false>   --gpu-layers <N>   --think <tokens>',
+		'        custom llama.cpp build:  --no-prebuilt (build from source) · --llama-build <auto|forceRebuild|never> · env LLAMA_CMAKE=<json>',
+		'     optional (separate coverage model): env LOCAL_MODEL=<path.gguf>. On WSL, export',
 		'               LD_LIBRARY_PATH=/usr/lib/wsl/lib:/usr/lib/x86_64-linux-gnu  or the gguf silently runs on CPU.',
 		'  mindsmith mcp   [same flags/env as serve]                      MCP tool surface over stdio (no http socket)',
 		'  mindsmith rooms list | import <f.sgc> | export <name> <dir> | freeze <name>   [--room <dir>]',
@@ -45,8 +49,49 @@ if ( !cmd || cmd === '--help' || cmd === '-h' || cmd === 'help' ) {
 	process.exit(0);
 }
 
-// escalation resolution shared by serve + mcp: an N-tier routing config OR the legacy single frontier backend.
+const flagInt = ( n, d ) => { const v = flag(n); return v === undefined ? d : Number(v); };
+const hasFlag = ( n ) => argv.indexOf('--' + n) !== -1;
+
+// --model <gguf> (env MODEL) = the SINGLE-MODEL server mode. ONE gguf load answers BOTH the graph's structured
+// work WITHOUT think (reasoningBudget 0 — coverage, critique, propose) AND the user-facing answers WITH think
+// (the escalation), sharing one VRAM load (local-host keys the load by path+opts; the budget is per-call). So a
+// box with room for a single model still gets a full LLM server + the graph value-add. Model/build options
+// (context size, gpu, gpu-layers, a custom llama.cpp build) apply to that one load.
+function modelConfig() {
+	const gpuRaw = flag('gpu');                                                 // auto | cuda | metal | vulkan | false/cpu
+	const gpu = gpuRaw === undefined ? undefined : (/^(false|cpu|off|none)$/i.test(gpuRaw) ? false : gpuRaw);
+	const llama = {};                                                           // getLlama opts = the custom-build surface
+	if ( flag('llama-build') ) llama.build = flag('llama-build');               // auto | forceRebuild | never
+	if ( hasFlag('no-prebuilt') || /^(1|true)$/i.test(process.env.LLAMA_FROM_SOURCE || '') ) llama.usePrebuiltBinaries = false;   // build from source
+	if ( process.env.LLAMA_CMAKE ) { try { llama.cmakeOptions = JSON.parse(process.env.LLAMA_CMAKE); } catch ( _e ) {} }
+	const model = {};                                                           // loadModel opts
+	const gl = flagInt('gpu-layers', process.env.GPU_LAYERS != null ? Number(process.env.GPU_LAYERS) : undefined);
+	if ( gl != null && !Number.isNaN(gl) ) model.gpuLayers = gl;
+	const cfg = {};
+	const ctx = flagInt('ctx', process.env.CONTEXT_SIZE != null ? Number(process.env.CONTEXT_SIZE) : undefined);
+	if ( ctx != null && !Number.isNaN(ctx) ) cfg.contextSize = ctx;
+	if ( gpu !== undefined ) cfg.gpu = gpu;
+	if ( Object.keys(llama).length ) cfg.llama = llama;
+	if ( Object.keys(model).length ) cfg.model = model;
+	return cfg;
+}
+let _sm;
+function singleModel() {
+	if ( _sm !== undefined ) return _sm;
+	const path = flag('model') || process.env.MODEL;
+	if ( !path ) return (_sm = null);
+	const { makeLocalAsk } = require('skynet-graph/lib/providers/llm-local.js');
+	const base = modelConfig();                                                 // IDENTICAL load opts for both handles → ONE shared load
+	const think = flagInt('think', process.env.THINK_BUDGET != null ? Number(process.env.THINK_BUDGET) : 1024);
+	const answerAsk = makeLocalAsk(Object.assign({ modelPath: path, reasoningBudget: think }, base));   // user answers — WITH think
+	const graphAsk  = makeLocalAsk(Object.assign({ modelPath: path, reasoningBudget: 0 }, base));        // graph/critique/propose — no think, SAME load
+	return (_sm = { answerAsk, graphAsk, path, think, base });
+}
+
+// escalation resolution shared by serve + mcp: single-model, an N-tier routing config, or a single frontier backend.
 function resolveEscalation( need ) {
+	const sm = singleModel();
+	if ( sm ) return { frontierChat: sm.answerAsk };
 	const routing = resolveRouting(argv, process.env);
 	if ( routing ) return { tiers: routing.tiers, policy: routing.policy };
 	let frontierChat;
@@ -56,7 +101,9 @@ function resolveEscalation( need ) {
 	return { frontierChat };
 }
 function buildApp( escalation, extra ) {
-	const localAsk = process.env.LOCAL_MODEL ? require('skynet-graph/lib/providers/llm-local.js').makeLocalAsk({ modelPath: process.env.LOCAL_MODEL, reasoningBudget: 0 }) : undefined;
+	const sm = singleModel();
+	const localAsk = sm ? sm.graphAsk                                           // single-model: the graph shares the one load (no think)
+		: (process.env.LOCAL_MODEL ? require('skynet-graph/lib/providers/llm-local.js').makeLocalAsk({ modelPath: process.env.LOCAL_MODEL, reasoningBudget: 0 }) : undefined);
 	return createApp(Object.assign({}, escalation, {
 		localAsk,
 		store: flag('store') || '.skynet-stock.json', sgcDir: roomDir,
@@ -105,7 +152,8 @@ if ( cmd === 'rooms' ) {
 		// the FULL tool surface over the room: proxy (ask/drift/metrics/lattice_load) + the ASSISTANT
 		// lanes over the room's methods stock (hint = certified menu · propose = gated admission) +
 		// the C9 critical mind on the escalation backend (critique).
-		const wiring = { proxy: app.proxy, critiqueAsk: app.escalationAsk };
+		const sm = singleModel();
+		const wiring = { proxy: app.proxy, critiqueAsk: sm ? sm.graphAsk : app.escalationAsk };   // single-model: critique/lanes run no-think on the shared load
 		const mf = first.loaded.methods[0];
 		if ( mf ) { try { Object.assign(wiring, stockWiring(JSON.parse(require('fs').readFileSync(require('path').join(app.sgcDir, mf), 'utf8')))); } catch ( e ) { console.error('room stock lanes unavailable: ' + e.message); } }
 		const server = createMcpServer({
