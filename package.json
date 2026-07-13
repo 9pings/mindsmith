@@ -3,8 +3,8 @@
   "version": "0.1.0",
   "license": "AGPL-3.0-or-later",
   "author": "Nathanael Braun <pp9ping@gmail.com>",
-  "description": "Your low-quant local model, repaired and steered like a bigger one — an OpenAI-compatible local proxy over the skynet-graph engine + your own room of verified .sgc stocks. Nothing leaves the machine (no-egress proven on real sockets).",
-  "keywords": ["llm", "local-llm", "openai-compatible", "proxy", "mcp", "gguf", "quantization", "offline", "agpl", "skynet-graph"],
+  "description": "An external reasoning layer for your local LLM — an OpenAI-compatible proxy + MCP tools (an auditable critical mind, gated think-mode lanes) backed by a mixture of certified graph-experts in your own verified .sgc rooms. Repairs low-quant judgment; nothing leaves the machine (no-egress proven on real sockets).",
+  "keywords": ["llm", "local-llm", "reasoning", "critical-thinking", "mixture-of-experts", "knowledge-graph", "openai-compatible", "proxy", "mcp", "agent", "offline", "gguf", "agpl", "skynet-graph"],
   "main": "./lib/app.js",
   "bin": {
     "mindsmith": "bin/mindsmith"

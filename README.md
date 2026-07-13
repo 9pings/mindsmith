@@ -4,17 +4,21 @@
 > We publish maturity per feature and keep refuted claims on the page. Honesty is the product's USP,
 > so it is also the documentation's. See [docs/honesty.html](docs/honesty.html).
 
-**The ready-made appliance: an OpenAI-compatible local endpoint where covered queries are served from
-YOUR verified stock at zero frontier calls — plus gated assistant lanes and an external critical mind,
-over shareable `.sgc` rooms. Nothing leaves your machine by default.**
+**Mindsmith is an external reasoning layer for your local LLM — an auditable critical mind, gated
+think-mode lanes, and verified-stock answers at zero frontier calls, from a mixture of certified
+graph-experts fronting your model. OpenAI-compatible endpoint + MCP tools over shareable `.sgc` rooms;
+nothing leaves your machine by default.**
 
-You run a heavily-quantized gguf because it fits your VRAM; quantization broke part of its judgment.
-This appliance, a thin assembly over the [skynet-graph](https://github.com/9pings/skynet-graph) engine,
-steers that model against a certified method vocabulary and answers covered queries from verified local
-stock at 0 frontier calls. Measured on the same model at two quant levels (campaign protocols in the
-engine repo): SQL covered queries low-quant **8→63 %** (high-quant reference 46→92 %, N=201) ·
-finance-table traffic **7→62 %** (20→78 %, N=120) — with zero big-model calls at runtime on the
-covered slice.
+A small quantized gguf fits your VRAM, but quantization costs it judgment — and on its own it has no
+external check on its reasoning. Mindsmith, a thin surface over the
+[skynet-graph](https://github.com/9pings/skynet-graph) engine, hands the model tools it doesn't have
+alone: answers steered against a certified **method vocabulary** (covered queries served from verified
+local stock at 0 frontier calls); gated **assistant lanes** (`propose` / `hint` — an external think-mode
+that returns a tested verdict or refuses, never a guess); and an external **critical mind** (`critique` —
+weigh a question over a witness-gated pool of arguments, with an honest, certification-aware verdict).
+The judgment repair is measured on the same model at two quant levels (protocols in the engine repo):
+SQL covered queries low-quant **8→63 %** (high-quant reference 46→92 %, N=201) · finance-table traffic
+**7→62 %** (20→78 %, N=120) — zero big-model calls at runtime on the covered slice.
 
 No accounts, no catalog, no phone-home. Stocks live in a local **room** you own: build them with the
 engine's forge (0 false admissions across 3 datasets × 2 forge models; sha256 validation dossier per
