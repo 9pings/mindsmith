@@ -68,6 +68,22 @@ this is pre-launch. Scale details: [docs/honesty.html](docs/honesty.html).
 | **F6 — Local `.sgc` rooms** (list/import/export/freeze, sha256 dossiers, engine-gated loads) | `█████░` 5/6 product-integrated | gate-checked import; loads never bypass the engine gates | [docs](docs/features.html#f6) |
 | **F2 — Piece-by-piece zoom** (typed DAG on big tasks) | `████░░` 4/6 measured — **library-only today, not surfaced here (the known gap)** | math word problems ×3.25 [2.4–4.8] · financial-table QA ×2.54 [1.96–3.5], 560 tasks | [docs](docs/features.html#f2-gap) |
 
+## Why not just…?
+
+- **…run a bigger model?** If it fits your VRAM, do. This exists for the model you *can* run:
+  certified-stock steering recovers most of what quantization broke (SQL 8→63 %, finance 7→62 %),
+  at 0 frontier calls on the covered slice.
+- **…use the model's think mode / a self-critique prompt?** The 2024-25 literature (and our own
+  3-form refutation) agree: self-critique underperforms *external* feedback with localized blame.
+  The `propose` gate and `critique` tool are that external feedback — structural, auditable, and
+  un-arguable-with (a forced write lands UNTRUSTED, never admitted).
+- **…RAG / a prompt library?** Retrieval trusts whatever is indexed. A room only admits what
+  passes the gate (0 false admissions measured at the forge), and every completion tells you
+  which slice you can trust (`x-sg-served-from`, `x-sg-coverage`).
+- **…an agent framework's memory?** None we checked reopens a task whose premise drifted; the
+  engine's typed task state retracts and reopens with the reason, at 0 model calls (surfaced here
+  via MCP `state_recall` / `plan_sync` on the engine side).
+
 ## What actually runs
 
 - **`serve`** — `POST /v1/chat/completions`, `GET /v1/models`, `GET /healthz`. Default port 4747,

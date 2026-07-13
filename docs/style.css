@@ -20,6 +20,7 @@
 
 html { scroll-behavior: smooth; }
 @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+[id] { scroll-margin-top: 70px; }   /* deep links land clear of the sticky header */
 
 body {
   margin: 0;
@@ -243,7 +244,7 @@ p { margin: 0.7em 0; }
 .term .c-out  { color: var(--muted); }
 .term .c-hdr  { color: var(--amber); }
 .term .c-ok   { color: var(--sage); }
-.term .c-dim  { color: #5c6772; }
+.term .c-dim  { color: #7a8794; }   /* 4.7:1 on the terminal #0b0e12 */
 .term .caret {
   display: inline-block; width: 8px; height: 15px;
   background: var(--amber);
@@ -258,8 +259,8 @@ p { margin: 0.7em 0; }
 }
 
 /* ── diagram ────────────────────────────────────────────────────────── */
-.diagram { margin-top: 26px; }
-.diagram svg { width: 100%; height: auto; display: block; }
+.diagram { margin-top: 26px; overflow-x: auto; }
+.diagram svg { width: 100%; height: auto; display: block; min-width: 680px; }   /* scrolls on phones instead of shrinking text to nothing */
 
 /* ── tables (numbers) ───────────────────────────────────────────────── */
 .tbl-wrap { overflow-x: auto; margin: 16px 0; }
@@ -339,4 +340,5 @@ td .num { font-family: var(--mono); color: var(--amber); }
   .site-nav { gap: 14px; margin-left: 0; }
   th, td { padding: 7px 10px; }
   .feature { padding: 20px 18px; }
+  .mbar { white-space: normal; }   /* long maturity labels wrap instead of forcing page scroll */
 }

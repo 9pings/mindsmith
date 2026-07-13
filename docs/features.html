@@ -5,6 +5,10 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Features — skynet-dequantizer</title>
 <meta name="description" content="Per-feature detail: measured numbers, stated limits, and how to use each surface of the skynet-dequantizer appliance.">
+<meta property="og:title" content="skynet-dequantizer — features, numbers, limits">
+<meta property="og:description" content="Per-feature detail: measured numbers, stated limits, and how to use each surface of the skynet-dequantizer appliance.">
+<meta property="og:type" content="website">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%230f1317'/%3E%3Ctext x='16' y='22' text-anchor='middle' font-family='monospace' font-size='16' fill='%23e5a03c'%3Edq%3C/text%3E%3C/svg%3E">
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -42,14 +46,14 @@
     <div class="tbl-wrap">
       <table>
         <thead>
-          <tr><th>Feature</th><th>engine lib</th><th>dequantizer serve</th><th>dequantizer mcp</th></tr>
+          <tr><th scope="col">Feature</th><th scope="col">engine lib</th><th scope="col">dequantizer serve</th><th scope="col">dequantizer mcp</th></tr>
         </thead>
         <tbody>
           <tr><td><a href="#f1">F1 repair</a></td><td>✓</td><td>✓ OpenAI endpoint</td><td>✓ <code>ask</code> / <code>hint</code> / <code>propose</code></td></tr>
           <tr><td><a href="#f2-gap">F2 zoom</a></td><td>✓ bricks</td><td>✗ <span class="tag tag-gap">known gap</span></td><td>✗ <span class="tag tag-gap">known gap</span></td></tr>
           <tr><td>F3 task memory</td><td>✓ (engine core; <code>sg mcp</code> exposes it)</td><td>—</td><td>—</td></tr>
           <tr><td><a href="#f4">F4 think mode</a></td><td>✓</td><td>—</td><td>✓ <code>propose</code></td></tr>
-          <tr><td><a href="#f5">F5 critical mind</a></td><td>✓ C9</td><td>—</td><td>✓ <code>critique</code></td></tr>
+          <tr><td><a href="#f5">F5 critical mind</a></td><td>✓ (engine combo C9)</td><td>—</td><td>✓ <code>critique</code></td></tr>
           <tr><td><a href="#f6">F6 rooms</a></td><td>✓</td><td>✓ rooms CLI</td><td>✓ <code>lattice_load</code></td></tr>
         </tbody>
       </table>
@@ -304,7 +308,7 @@ $ skynet-dequantizer rooms export fin-tables-stock ./shipped  # bundle + dossier
 
         <dt>What the measurements say (engine library, not this appliance)</dt>
         <dd><ul>
-          <li>Cross-domain, N=200/domain (560 tasks total): math word problems
+          <li>Cross-domain at N=200 per domain — 560 tasks total across the N=40/80/200 campaigns: math word problems
             <span class="num">16→52&nbsp;%</span> (×3.25 [2.4–4.8]), financial-table QA
             <span class="num">20→50&nbsp;%</span> (×2.54 [1.96–3.5]) — bootstrap CIs.</li>
           <li>Where the lone model collapses, the pieces hold: deep tasks
@@ -332,6 +336,7 @@ $ skynet-dequantizer rooms export fin-tables-stock ./shipped  # bundle + dossier
 <footer class="site-foot">
   <div class="wrap">
     <span>AGPL-3.0-or-later</span>
+    <span>© 2026 Nathanael Braun</span>
     <span>solo-author project</span>
     <a href="https://github.com/9pings/skynet-graph">engine: github.com/9pings/skynet-graph</a>
     <span class="badge">pre-launch — nothing is field-adopted yet (rung 6/6)</span>
