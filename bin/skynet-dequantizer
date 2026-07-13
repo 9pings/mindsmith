@@ -82,9 +82,15 @@ if ( cmd === 'rooms' ) {
 	// stdout is the PROTOCOL channel: everything human goes to stderr.
 	const app = buildApp(resolveEscalation('mcp'), { onAnswer: ( row ) => console.error('[' + (row.source === 'local' ? 'cache' : 'frontier') + '] ' + row.query) });
 	app.sync().then(( first ) => {
-		const { createMcpServer, defaultTools, startMcpStdio } = require('skynet-graph/lib/sg/mcp.js');
+		const { createMcpServer, defaultTools, startMcpStdio, stockWiring } = require('skynet-graph/lib/sg/mcp.js');
+		// the FULL tool surface over the room: proxy (ask/drift/metrics/lattice_load) + the ASSISTANT
+		// lanes over the room's methods stock (hint = certified menu · propose = gated admission) +
+		// the C9 critical mind on the escalation backend (critique).
+		const wiring = { proxy: app.proxy, critiqueAsk: app.escalationAsk };
+		const mf = first.loaded.methods[0];
+		if ( mf ) { try { Object.assign(wiring, stockWiring(JSON.parse(require('fs').readFileSync(require('path').join(app.sgcDir, mf), 'utf8')))); } catch ( e ) { console.error('room stock lanes unavailable: ' + e.message); } }
 		const server = createMcpServer({
-			tools: defaultTools({ proxy: app.proxy }),
+			tools: defaultTools(wiring),
 			serverInfo: { name: 'skynet-dequantizer', version: require('../package.json').version }
 		});
 		startMcpStdio({ server });
