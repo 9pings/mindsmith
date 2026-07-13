@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Honesty — skynet-dequantizer</title>
+<meta name="description" content="The refuted-claims list, the measured decidability bound, and the 6-rung maturity scale. A refuted claim is removed the day it falls — and listed here.">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="banner">pre-launch — nothing is field-adopted yet (rung 6/6) · you are on the page that explains why we say so</div>
+
+<header class="site-head">
+  <div class="wrap">
+    <a class="wordmark" href="index.html">skynet-<span class="tld">dequantizer</span></a>
+    <nav class="site-nav" aria-label="Site">
+      <a href="index.html">Overview</a>
+      <a href="features.html">Features</a>
+      <a href="honesty.html" aria-current="page">Honesty</a>
+      <a href="https://github.com/9pings/skynet-graph">Engine ↗</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+<div class="wrap">
+
+  <div class="hero">
+    <p class="kicker">The differentiator</p>
+    <h1>A refuted claim is removed <em>the day it falls</em>.</h1>
+    <p class="sub">And it stays listed here. Every number on this site comes from a campaign with a
+      stated N, negative controls, and deterministic re-runs. Where a mechanism did not survive its
+      own kill-gate, we removed it from the product and kept the record — because an honest
+      negative is information you would otherwise pay to rediscover.</p>
+  </div>
+
+  <!-- ── maturity scale ─────────────────────────────────────────────── -->
+  <section id="scale" aria-labelledby="h-scale">
+    <p class="kicker">The scale behind every bar</p>
+    <h2 id="h-scale">Six rungs, no shortcuts</h2>
+    <p class="lead">Each feature carries one bar on this fixed scale. A rung is claimed only when
+      its evidence exists; the bars on the <a href="features.html">features page</a> link to that
+      evidence.</p>
+
+    <ol class="scale">
+      <li><span class="n">1</span><span><span class="what">Coherent idea</span><br>
+        <span class="how">the mechanism is stated precisely enough to be wrong.</span></span></li>
+      <li><span class="n">2</span><span><span class="what">Design with pre-registered kill-gates</span><br>
+        <span class="how">the conditions under which we abandon it are written before building.</span></span></li>
+      <li><span class="n">3</span><span><span class="what">Mechanics proven</span><br>
+        <span class="how">a harness runs it end-to-end, with negative controls and a deterministic re-run.</span></span></li>
+      <li><span class="n">4</span><span><span class="what">Measured at scale</span><br>
+        <span class="how">campaigns with stated N and confidence intervals.</span></span></li>
+      <li><span class="n">5</span><span><span class="what">Product-integrated</span><br>
+        <span class="how">in the library, on a surface, under tests.</span></span></li>
+      <li class="unreached"><span class="n">6</span><span><span class="what">Field-adopted</span><br>
+        <span class="how">external replications by people who are not us.</span></span></li>
+    </ol>
+
+    <p class="lead"><strong>Nothing is at rung 6.</strong> This project is pre-launch: no external
+      replication exists yet. The bars show it — a full bar would be a lie today.</p>
+  </section>
+
+  <!-- ── refuted list ───────────────────────────────────────────────── -->
+  <section id="refuted" aria-labelledby="h-refuted">
+    <p class="kicker">Kept on the page</p>
+    <h2 id="h-refuted">The refuted-claims list</h2>
+    <p class="lead">Each of these was designed, built, and measured — and the measurement said no.
+      Each was removed from the product; none will quietly reappear without new evidence.</p>
+
+    <ul class="refuted-list">
+      <li><span class="tag tag-refuted">refuted</span> &nbsp;
+        <strong>Runtime "trusted answers" cross-agreement tier (F1).</strong>
+        The idea: let two runtime answers certify each other and skip escalation. Tested; the
+        agreement did not carry the trust it claimed. Removed. The guarantee that remains is the
+        honest one: certification happens <strong>at stock admission</strong>, not at execution.</li>
+
+      <li><span class="tag tag-refuted">refuted</span> &nbsp;
+        <strong>Graded / prevalence weighting under the precision cap (F5).</strong>
+        Weighting arguments by graded strength or prevalence did not survive the low-quant judge's
+        precision cap. The verdict logic uses counts against the measured margin bound instead.</li>
+
+      <li><span class="tag tag-refuted">refuted</span> &nbsp;
+        <strong>Goal-criteria weighting for a low-quant judge (F5) — 2 forms.</strong>
+        Asking the small judge to weigh arguments against stated goal criteria failed in both
+        tested forms.</li>
+
+      <li><span class="tag tag-refuted">refuted</span> &nbsp;
+        <strong>Low-quant self-audit (F5) — 3 forms.</strong>
+        The small model auditing its own critique did not survive any of the three tested forms.
+        That is exactly why the critical mind is <strong>external</strong> and witness-gated
+        rather than self-assessed.</li>
+    </ul>
+  </section>
+
+  <!-- ── decidability bound ─────────────────────────────────────────── -->
+  <section id="bound" aria-labelledby="h-bound">
+    <p class="kicker">Where the verdict stops</p>
+    <h2 id="h-bound">The measured decidability bound</h2>
+    <p class="lead">The <code>critique</code> tool renders a mechanical verdict only when the
+      anchored count margin clears a measured threshold:</p>
+
+    <div class="tbl-wrap">
+      <table>
+        <thead>
+          <tr><th>Decision frame</th><th>Mechanical verdict at</th><th>Below the bound</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>FREE / DECLARED (open frames)</td>
+            <td><span class="num">count margin ≥ 3</span></td>
+            <td rowspan="2">counts + coverage + an honest <strong>UNDECIDED</strong> — never a fake
+              weighing. The payload names the OPEN points so the host knows exactly which data
+              would move the margin.</td>
+          </tr>
+          <tr>
+            <td>Certified perimeter (<code>.sgc</code> stock)</td>
+            <td><span class="num">count margin ≥ 2</span> (24/24 measured)</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <p>Why the perimeter matters: without it, the model's <em>self-believed</em> coverage ran to
+      about 106&nbsp;% — it was sure it had weighed everything, and it was wrong. The certified
+      perimeter is what closes that illusion; it is also what buys the tighter bound. With it,
+      weighing decisions went <span class="num">12/24 → 24/24</span>.</p>
+    <p>UNDECIDED is not a failure mode. It is the tool's typed way of saying "this margin does not
+      support a verdict — here is what would". The
+      <a href="features.html#f5">iteration contract</a> turns it into the next round's input.</p>
+  </section>
+
+  <!-- ── how we measure ─────────────────────────────────────────────── -->
+  <section id="method" aria-labelledby="h-method">
+    <p class="kicker">The practice</p>
+    <h2 id="h-method">How the numbers are made</h2>
+    <ul>
+      <li><strong>Stated N, always.</strong> SQL N=201 · finance tables N=120 · zoom campaigns
+        N=200/domain (560 tasks) with bootstrap confidence intervals · critique 48 arguments,
+        24 decisions.</li>
+      <li><strong>Negative controls.</strong> Anchored generation reports 0 fabrication
+        <em>because</em> the negative controls are part of the protocol, not an afterthought
+        (anti-injection ledger: 8/8 retracted).</li>
+      <li><strong>Deterministic re-runs.</strong> The engine ships an integrated demo that replays
+        bit-identically with no model and no GPU:
+        <code>node examples/integrated-demo/run.js --replay</code> — 7 checks, in the
+        <a href="https://github.com/9pings/skynet-graph">engine repo</a>. That replay is the public
+        verifiable.</li>
+      <li><strong>Auditable stock.</strong> Every forged stock carries a sha256 validation dossier;
+        every room load goes through the engine gates. This appliance's own suite (26/26, GPU-free)
+        includes the fail-closed no-egress guard on real sockets, with a negative control proving
+        the guard has teeth.</li>
+      <li><strong>Dataset domains, named neutrally:</strong> SQL, finance tables, math word
+        problems, argumentation corpora.</li>
+    </ul>
+  </section>
+
+  <!-- ── not claimed ────────────────────────────────────────────────── -->
+  <section id="not-claimed" aria-labelledby="h-nc">
+    <p class="kicker">Read this before adopting</p>
+    <h2 id="h-nc">What is NOT claimed</h2>
+    <ul>
+      <li>No claim that runtime steering proves correctness — the guarantee is at stock admission.</li>
+      <li>No claim of coverage beyond the typed, recurrent slice of your traffic; coverage depends
+        on your stocks, forge yield is per-domain, amortization is a property of the domain's
+        stereotypy.</li>
+      <li>No claim that the piece-by-piece zoom (F2) is available on this appliance — it is
+        library-only today (<a href="features.html#f2-gap">the known gap</a>).</li>
+      <li>No claim of a verdict below the decidability bound — UNDECIDED is the honest output.</li>
+      <li>No claim of real streaming (it is simulated) or per-tier timeouts (none yet).</li>
+      <li>No claim of field adoption — rung 6/6 is empty until people who are not us replicate the
+        results.</li>
+    </ul>
+  </section>
+
+</div>
+</main>
+
+<footer class="site-foot">
+  <div class="wrap">
+    <span>AGPL-3.0-or-later</span>
+    <span>solo-author project</span>
+    <a href="https://github.com/9pings/skynet-graph">engine: github.com/9pings/skynet-graph</a>
+    <span class="badge">pre-launch — nothing is field-adopted yet (rung 6/6)</span>
+  </div>
+</footer>
+
+</body>
+</html>

@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Features — skynet-dequantizer</title>
+<meta name="description" content="Per-feature detail: measured numbers, stated limits, and how to use each surface of the skynet-dequantizer appliance.">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="banner">pre-launch — nothing is field-adopted yet (rung 6/6) · <a href="honesty.html">how we rate maturity</a></div>
+
+<header class="site-head">
+  <div class="wrap">
+    <a class="wordmark" href="index.html">skynet-<span class="tld">dequantizer</span></a>
+    <nav class="site-nav" aria-label="Site">
+      <a href="index.html">Overview</a>
+      <a href="features.html" aria-current="page">Features</a>
+      <a href="honesty.html">Honesty</a>
+      <a href="https://github.com/9pings/skynet-graph">Engine ↗</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+<div class="wrap">
+
+  <div class="hero">
+    <p class="kicker">Features</p>
+    <h1>Numbers, limits, how-to — per feature</h1>
+    <p class="sub">Each feature below states its maturity on the shared 6-rung scale, the measured
+      numbers behind it (with N), the limits we state ourselves, and the exact surface that carries
+      it. Feature ids (F1…F7) are the engine's own — the ones this appliance surfaces are detailed
+      here.</p>
+  </div>
+
+  <!-- surfaces at a glance -->
+  <section aria-labelledby="h-surfaces">
+    <p class="kicker">Surfaces at a glance</p>
+    <h2 id="h-surfaces">What is wired where (audited 2026-07-13)</h2>
+    <div class="tbl-wrap">
+      <table>
+        <thead>
+          <tr><th>Feature</th><th>engine lib</th><th>dequantizer serve</th><th>dequantizer mcp</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><a href="#f1">F1 repair</a></td><td>✓</td><td>✓ OpenAI endpoint</td><td>✓ <code>ask</code> / <code>hint</code> / <code>propose</code></td></tr>
+          <tr><td><a href="#f2-gap">F2 zoom</a></td><td>✓ bricks</td><td>✗ <span class="tag tag-gap">known gap</span></td><td>✗ <span class="tag tag-gap">known gap</span></td></tr>
+          <tr><td>F3 task memory</td><td>✓ (engine core; <code>sg mcp</code> exposes it)</td><td>—</td><td>—</td></tr>
+          <tr><td><a href="#f4">F4 think mode</a></td><td>✓</td><td>—</td><td>✓ <code>propose</code></td></tr>
+          <tr><td><a href="#f5">F5 critical mind</a></td><td>✓ C9</td><td>—</td><td>✓ <code>critique</code></td></tr>
+          <tr><td><a href="#f6">F6 rooms</a></td><td>✓</td><td>✓ rooms CLI</td><td>✓ <code>lattice_load</code></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="lead">F3 (task memory that reopens) and F7 (the versionable-beliefs substrate) live in
+      the engine and its <code>sg mcp</code> surface — see the
+      <a href="https://github.com/9pings/skynet-graph">engine repo</a>. This page covers what the
+      appliance itself carries.</p>
+  </section>
+
+  <!-- ── F1 ─────────────────────────────────────────────────────────── -->
+  <section id="f1" aria-labelledby="h-f1">
+    <div class="feature">
+      <h2 id="h-f1"><span class="fid">F1</span>Low-quant repair</h2>
+      <span class="mbar"><span class="on" aria-hidden="true">█████</span><span class="off" aria-hidden="true">░</span><span class="rung">5/6</span><span class="lbl">product-integrated</span></span>
+      <dl>
+        <dt>What it is</dt>
+        <dd>You run a heavily-quantized gguf because it fits your VRAM; quantization broke part of
+          its judgment. A certified method stock (forged offline against an executable oracle)
+          steers the model's output, and covered queries are answered from verified local stock at
+          zero frontier calls on repeats.</dd>
+
+        <dt>The numbers</dt>
+        <dd><ul>
+          <li>SQL covered queries, low-quant: <span class="num">8→63&nbsp;%</span> (the same model
+            high-quant as reference: 46→92&nbsp;%), N=201.</li>
+          <li>Finance-table traffic: <span class="num">7→62&nbsp;%</span> (reference 20→78&nbsp;%), N=120.</li>
+          <li><span class="num">Zero</span> big-model calls at runtime on the covered slice.</li>
+          <li>Forge: <span class="num">0 false admissions</span> across 3 datasets × 2 forge models;
+            a sha256 validation dossier per stock.</li>
+        </ul></dd>
+
+        <dt>The limits — stated, not buried</dt>
+        <dd><ul>
+          <li>The guarantee is <strong>at admission, not at execution</strong>: runtime steering is
+            not a correctness proof. A runtime "trusted answers" cross-agreement tier was tested and
+            <strong>refuted</strong> — it was removed (<a href="honesty.html#refuted">kept on the
+            honesty page</a>).</li>
+          <li>Forge yield is per-domain; amortization is a property of the domain's stereotypy.
+            The win lives on the typed, recurrent slice of your traffic — coverage depends on your
+            stocks.</li>
+          <li>Streaming is simulated; no per-tier timeout yet.</li>
+        </ul></dd>
+
+        <dt>How to use</dt>
+        <dd>
+          <pre><code>FRONTIER_MODEL=/path/model.gguf skynet-dequantizer serve --room ./sgc
+# → http://127.0.0.1:4747/v1 — POST /v1/chat/completions · GET /v1/models · GET /healthz
+# optional: LOCAL_MODEL=/path/small.gguf   (semantic coverage: paraphrases hit the stock)</code></pre>
+          <p>Every completion carries provenance headers:
+            <code>x-sg-served-from: local|frontier</code> · <code>x-sg-arm</code>
+            (<code>match</code>, <code>recall-full</code>, <code>recall-partial</code>,
+            <code>escalate</code>) · <code>x-sg-cost</code> · <code>x-sg-coverage</code> ·
+            <code>x-sg-saved</code> (frontier calls avoided so far) ·
+            <code>x-sg-sgc-version</code> (the loaded stock's <code>name@version</code>).</p>
+          <p><code>GET /healthz</code> is the ops readout — GET, no key, no query content:</p>
+          <pre><code>{ "status": "ok", "policy": "no-egress",
+  "tiers": { "configured": ["local", "mid", "frontier"], "reachable": ["local"] },
+  "sgc": ["fin-tables-stock@1.0.0"], "stock": 128 }        // illustrative values</code></pre>
+          <p>Escalation is either a single frontier (<code>FRONTIER_MODEL</code> embedded gguf, or
+            <code>LLM_BASE</code> any OpenAI-compatible endpoint) or N-tier routing:</p>
+          <pre><code>// routing.json — tiers are ordered; each has an egress class; the policy is the ceiling
+{ "tiers": [
+    { "name": "local",    "egressClass": "none",     "backend": { "preset": "local", "modelPath": "…" } },
+    { "name": "mid",      "egressClass": "mid",      "backend": { "preset": "custom", "base": "…" } },
+    { "name": "frontier", "egressClass": "frontier", "backend": { "preset": "…" } } ],
+  "policy": { "dataPolicy": "no-egress" } }   // no-egress (default) | allow-mid | allow-all</code></pre>
+          <p>A query is never silently sent to a forbidden tier: if the policy leaves nothing
+            reachable, the refusal is typed (<code>NO_REACHABLE_TIER</code>). The no-egress
+            guarantee is enforced fail-closed on real sockets in the test suite, with a negative
+            control proving the guard has teeth.</p>
+        </dd>
+      </dl>
+    </div>
+  </section>
+
+  <!-- ── F4 ─────────────────────────────────────────────────────────── -->
+  <section id="f4" aria-labelledby="h-f4">
+    <div class="feature">
+      <h2 id="h-f4"><span class="fid">F4</span>External think mode — the two assistant lanes</h2>
+      <span class="mbar"><span class="on" aria-hidden="true">█████</span><span class="off" aria-hidden="true">░</span><span class="rung">5/6</span><span class="lbl">product-integrated</span></span>
+      <dl>
+        <dt>What it is</dt>
+        <dd>The appliance as the host LLM's assistant, in two explicit lanes.
+          <strong>SOFT</strong> (<code>hint</code>): the certified-shape menu for a query —
+          advisory, no guarantee attached, and it says so in the payload
+          (<code>advisory:&nbsp;true</code>). <strong>HARD</strong> (<code>propose</code>): submit a
+          typed proposal — admitted, or refused with blame plus the admissible options
+          <strong>enumerated through the gate</strong> (tested, never guessed). The proposer
+          revises and resubmits; bounded rounds are the host's discipline.</dd>
+
+        <dt>The numbers</dt>
+        <dd><ul>
+          <li>One dialogue round lifts <span class="num">17/24 → 24/24</span> at
+            <span class="num">zero false admissions</span>.</li>
+          <li>A forced write (<code>force: true</code>) is recorded as
+            <strong>untrusted provenance</strong> — traced, auditable, outside the certified layer.
+            It is never admitted. The gate never yields.</li>
+          <li>Honest refusal on over-constrained input (no fabricated compromise).</li>
+        </ul></dd>
+
+        <dt>The limits</dt>
+        <dd><ul>
+          <li><code>hint</code> is orientation only: it lifts the score, but admission is a
+            separate, gated step — the menu is not a promise the model will use it correctly.</li>
+          <li>The gate checks proposals against the certified referential of the loaded stock; an
+            empty room means no lanes (the mcp boot says so on stderr).</li>
+        </ul></dd>
+
+        <dt>How to use</dt>
+        <dd>
+          <pre><code>claude mcp add skynet -- skynet-dequantizer mcp --routing routing.json
+# tools: ask · drift · metrics · lattice_load · hint · propose · critique
+
+# propose → refusal carries blame + gate-tested options (illustrative):
+{ "status": "refused",
+  "blame": "shape \"join-4-tables\" ∉ certified referential (12 shapes)",
+  "options": [ { "shape": "join-2-tables" }, { "shape": "aggregate-groupby" }, … ] }
+
+# propose with force → recorded, never admitted:
+{ "status": "recorded-untrusted", "certified": false, "blame": "…" }</code></pre>
+        </dd>
+      </dl>
+    </div>
+  </section>
+
+  <!-- ── F5 ─────────────────────────────────────────────────────────── -->
+  <section id="f5" aria-labelledby="h-f5">
+    <div class="feature">
+      <h2 id="h-f5"><span class="fid">F5</span>External critical mind (<code>critique</code>)</h2>
+      <span class="mbar"><span class="on" aria-hidden="true">█████</span><span class="off" aria-hidden="true">░</span><span class="rung">5/6</span><span class="lbl">surface (lib + MCP) · campaign numbers at 4/6</span></span>
+      <dl>
+        <dt>What it is</dt>
+        <dd>A disciplined critique loop the host LLM can call as a tool: declared viewpoints are
+          established through a <strong>witness gate</strong> over a statement pool; missing theses
+          are generated <strong>anchored</strong> (each carries its witnesses); everything lands in
+          a typed ledger; and the verdict is <strong>certification-aware</strong> — mechanical only
+          above the measured margin, an honest UNDECIDED below it. The frame status is always in
+          the payload: <code>FREE</code> (model-brainstormed pool — coverage is relative to the
+          pool, and the payload says so), <code>MATERIAL</code> (caller-supplied statements),
+          <code>DECLARED</code> (caller-declared viewpoints).</dd>
+
+        <dt>The numbers</dt>
+        <dd><ul>
+          <li>Disciplined piece-by-piece argument coverage <span class="num">77&nbsp;%</span> vs
+            <span class="num">58&nbsp;%</span> whole-context (48 arguments).</li>
+          <li>With a certified perimeter, weighing decisions <span class="num">12/24 → 24/24</span>.
+            Self-believed coverage without the perimeter ran ~106&nbsp;% — the perimeter is what
+            closes the illusion.</li>
+          <li>Anchored generation of missing theses: <span class="num">0 fabrication</span> across
+            all negative controls; anti-injection ledger <span class="num">8/8</span> retracted;
+            JTMS cascade on retraction.</li>
+          <li><strong>The measured decidability bound:</strong> a verdict is mechanical at count
+            margin <span class="num">≥3</span> on free/declared frames, or
+            <span class="num">≥2</span> on a certified perimeter (24/24). Below the bound the
+            output is counts + coverage + UNDECIDED — never a fake weighing.</li>
+        </ul></dd>
+
+        <dt>The iteration contract</dt>
+        <dd>OPEN ledger points and an UNDECIDED verdict are a <strong>typed data request, not a
+          dead end</strong>. The tool cannot reach the web or the host's context — the host can.
+          The loop:
+          <ul>
+            <li>1 — call <code>critique {"topic": …}</code>; read <code>verdict</code>,
+              <code>margin</code>, <code>threshold</code>, and the ledger entries with
+              <code>status: "open"</code>;</li>
+            <li>2 — the host gathers real statements that bear on the OPEN points (web, docs, its
+              own context);</li>
+            <li>3 — call again with <code>statements: ["PRO: …", "CON: …"]</code> — the frame
+              upgrades to MATERIAL and the margin can move honestly;</li>
+            <li>4 — bounded rounds are the host's discipline; the <code>advice</code> field of the
+              payload restates this contract on every UNDECIDED.</li>
+          </ul>
+          Optional: <code>viewpoints: […]</code> declares the frame (DECLARED);
+          <code>polish: true</code> adds a presentation-only rewrite, content-locked.</dd>
+
+        <dt>The limits</dt>
+        <dd><ul>
+          <li>Campaign numbers are at rung 4/6 — measured, with the MCP surface promoted to the
+            product this week; treat the surface as fresh.</li>
+          <li>Entry templates (pool brainstorm, viewpoint naming) are not yet
+            form-robustness-tested.</li>
+          <li>On FREE frames, coverage is relative to the generated pool, not the world — announced
+            in the payload.</li>
+          <li>Refuted along the way and kept on the page: graded/prevalence weighting, goal-criteria
+            weighting, low-quant self-audit — <a href="honesty.html#refuted">the list</a>.</li>
+        </ul></dd>
+
+        <dt>How to use</dt>
+        <dd><pre><code>critique { "topic": "…" }                                   → frame FREE
+critique { "topic": "…", "statements": ["PRO: …", "CON: …"] } → frame MATERIAL
+critique { "topic": "…", "viewpoints": ["…", "…"] }           → frame DECLARED</code></pre>
+        Available in <code>skynet-dequantizer mcp</code> (runs on the appliance's escalation
+        backend) and in the engine's <code>sg mcp</code>.</dd>
+      </dl>
+    </div>
+  </section>
+
+  <!-- ── F6 ─────────────────────────────────────────────────────────── -->
+  <section id="f6" aria-labelledby="h-f6">
+    <div class="feature">
+      <h2 id="h-f6"><span class="fid">F6</span>Local <code>.sgc</code> rooms</h2>
+      <span class="mbar"><span class="on" aria-hidden="true">█████</span><span class="off" aria-hidden="true">░</span><span class="rung">5/6</span><span class="lbl">product-integrated</span></span>
+      <dl>
+        <dt>What it is</dt>
+        <dd>A room is just a directory of self-verifiable stock bundles — the community model with
+          no center: anyone builds, freezes, shares and imports their own <code>.sgc</code>
+          mini-repos. No catalog, no subscription, no egress by default. Everything content-bearing
+          stays engine-gated: import dry-loads the bundle through the same gates the appliance
+          uses, and the appliance re-loads the room through the gates at boot. There is no tool
+          that writes the stock or the registry directly.</dd>
+
+        <dt>The guarantees</dt>
+        <dd><ul>
+          <li>A malformed or empty bundle is <strong>refused at the gate, never written</strong>
+            into the room.</li>
+          <li><code>freeze</code> writes the companion dossier (sha256 + inventory) — the fixed,
+            auditable reference. A bundle whose bytes no longer match its dossier is not the frozen
+            reference anymore.</li>
+          <li>Lattice bundles load version-gated and confluence-checked: a conflicting ring is
+            rejected, never merged (<code>lattice_load</code> is the only registry write path).</li>
+        </ul></dd>
+
+        <dt>How to use</dt>
+        <dd><pre><code>$ skynet-dequantizer rooms list
+· fin-tables-stock@1.0.0  [methods, 12 classes]  sha256 9f31c2ab55e0d1c4…  (fin-tables-stock.sgc)
+❄ sql-lattice@1.2.0       [lattice, 31 classes]  sha256 4c7a90de12bb08e6…  (sql-lattice.sgc + sql-lattice.dossier.md)
+
+$ skynet-dequantizer rooms import ./someone-elses-stock.sgc   # gate-checked first, fail-closed
+$ skynet-dequantizer rooms freeze fin-tables-stock            # writes the sha256 dossier
+$ skynet-dequantizer rooms export fin-tables-stock ./shipped  # bundle + dossier, ready to share</code></pre>
+          <p>(Illustrative listing — the format is the real CLI output.) Forge new stocks from any
+            dataset with an executable oracle: <code>sg forge</code> in the
+            <a href="https://github.com/9pings/skynet-graph">engine repo</a> — every admitted
+            method passed a zero-false-admission gate, and the dossier proves it.</p></dd>
+      </dl>
+    </div>
+  </section>
+
+  <!-- ── F2 gap ─────────────────────────────────────────────────────── -->
+  <section id="f2-gap" aria-labelledby="h-f2">
+    <div class="feature">
+      <h2 id="h-f2"><span class="fid">F2</span>Piece-by-piece zoom — <em>not surfaced here yet</em></h2>
+      <span class="mbar"><span class="on" aria-hidden="true">████</span><span class="off" aria-hidden="true">░░</span><span class="rung">4/6</span><span class="lbl">measured at scale · library-only <span class="tag tag-gap">known gap</span></span></span>
+      <dl>
+        <dt>Plainly</dt>
+        <dd><strong>F2 is library-only today.</strong> The typed-DAG decomposition of big tasks is
+          measured (below) and lives in the skynet-graph library
+          (<code>Graph.combos.createPlanLoop</code> + the authoring bricks), but no MCP tool and no
+          dequantizer surface exposes it yet. This is the known product gap; it is on this page so
+          you do not have to discover it.</dd>
+
+        <dt>What the measurements say (engine library, not this appliance)</dt>
+        <dd><ul>
+          <li>Cross-domain, N=200/domain (560 tasks total): math word problems
+            <span class="num">16→52&nbsp;%</span> (×3.25 [2.4–4.8]), financial-table QA
+            <span class="num">20→50&nbsp;%</span> (×2.54 [1.96–3.5]) — bootstrap CIs.</li>
+          <li>Where the lone model collapses, the pieces hold: deep tasks
+            <span class="num">0/33</span> whole vs <span class="num">10/33</span> decomposed.</li>
+          <li>Compound ~20-operation tasks: whole-task floors at 0/20 across 3 configs;
+            a hierarchical 2-level split reaches <span class="num">73&nbsp;%</span> of sections.</li>
+          <li>Robustness to form proven: the scaffold gain holds across 4 wordings
+            (K-paraphrase harness).</li>
+        </ul></dd>
+
+        <dt>The limits</dt>
+        <dd><ul>
+          <li>The zoom pays <strong>iff the task exceeds whole-task capacity</strong> — neutral
+            inside it (measured on simple lookups).</li>
+          <li>The small model is not the task cutter (measured); the givens plumbing is per-domain.
+            Hence "not turnkey yet".</li>
+        </ul></dd>
+      </dl>
+    </div>
+  </section>
+
+</div>
+</main>
+
+<footer class="site-foot">
+  <div class="wrap">
+    <span>AGPL-3.0-or-later</span>
+    <span>solo-author project</span>
+    <a href="https://github.com/9pings/skynet-graph">engine: github.com/9pings/skynet-graph</a>
+    <span class="badge">pre-launch — nothing is field-adopted yet (rung 6/6)</span>
+  </div>
+</footer>
+
+</body>
+</html>

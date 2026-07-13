@@ -1,63 +1,133 @@
 # skynet-dequantizer
 
-**Your low-quant local model, repaired and steered like a bigger one — and nothing leaves the machine.**
+> **Pre-launch — nothing is field-adopted yet (rung 6/6 is empty on every bar below).**
+> We publish maturity per feature and keep refuted claims on the page. Honesty is the product's USP,
+> so it is also the documentation's. See [docs/honesty.html](docs/honesty.html).
 
-An OpenAI-compatible local proxy over the [skynet-graph](https://github.com/9pings/skynet-graph) engine. You run a heavily-quantized
-gguf because it fits your VRAM; quantization broke part of its judgment. This appliance steers the model's
-output against a **certified method vocabulary** (`.sgc` stocks) and serves covered queries from **verified
-local stock at zero model calls** on repeats. Measured effect of the steering on the same model at two quant
-levels (campaign protocols in the engine repo): SQL covered queries low-quant **8→63 %** (high-quant 46→92 %,
-N=201) · finance traffic **7→62 %** (20→78 %, N=120) — *at zero big-model runtime calls*.
+**The ready-made appliance: an OpenAI-compatible local endpoint where covered queries are served from
+YOUR verified stock at zero frontier calls — plus gated assistant lanes and an external critical mind,
+over shareable `.sgc` rooms. Nothing leaves your machine by default.**
 
-**No accounts, no catalog, no phone-home.** Stocks live in a local **room** you own: build them with the
-engine's forge, freeze them (auditable sha256 dossier), share them as files, import someone else's —
-a malformed bundle is refused at the gate, never written.
+You run a heavily-quantized gguf because it fits your VRAM; quantization broke part of its judgment.
+This appliance, a thin assembly over the [skynet-graph](https://github.com/9pings/skynet-graph) engine,
+steers that model against a certified method vocabulary and answers covered queries from verified local
+stock at 0 frontier calls. Measured on the same model at two quant levels (campaign protocols in the
+engine repo): SQL covered queries low-quant **8→63 %** (high-quant reference 46→92 %, N=201) ·
+finance-table traffic **7→62 %** (20→78 %, N=120) — with zero big-model calls at runtime on the
+covered slice.
 
-## Quick start
+No accounts, no catalog, no phone-home. Stocks live in a local **room** you own: build them with the
+engine's forge (0 false admissions across 3 datasets × 2 forge models; sha256 validation dossier per
+stock), freeze them, share them as files, import someone else's — a malformed bundle is refused at the
+gate, never written.
 
-```bash
-npm install && npm test      # GPU-free (stub frontier + local room)
-
-# serve (embedded gguf):
-FRONTIER_MODEL=/path/model.gguf npx skynet-dequantizer serve --room ./sgc
-# → point ANY OpenAI client at http://127.0.0.1:4747/v1   (apiKey: anything)
-
-# or as MCP tools for an agent host (Claude Code, etc.):
-claude mcp add skynet -- skynet-dequantizer mcp --routing routing.json
-```
-
-## Your stock rooms — the community model
+## 60-second quickstart
 
 ```bash
+# Pre-launch note: not on npm yet. Until the release:
+#   git clone <this repo> && cd skynet-dequantizer && npm install && npm test   # 26/26, GPU-free
+# Once published, the same commands work via:  npm i -g skynet-dequantizer   or   npx skynet-dequantizer
+
+# 1 — serve (embedded gguf as the escalation):
+FRONTIER_MODEL=/path/model.gguf skynet-dequantizer serve --room ./sgc
+# → skynet-dequantizer → http://127.0.0.1:4747/v1   (OpenAI-compatible)
+
+# 2 — point ANY OpenAI client at it (official SDKs, LangChain, Open WebUI, curl):
+#    baseURL = http://127.0.0.1:4747/v1     apiKey = anything
+curl -si http://127.0.0.1:4747/v1/chat/completions \
+  -H 'content-type: application/json' \
+  -d '{"messages":[{"role":"user","content":"your question"}]}'
+# every completion carries provenance headers:
+#   x-sg-served-from: local|frontier · x-sg-arm · x-sg-cost · x-sg-coverage · x-sg-saved · x-sg-sgc-version
+
+# 3 — your stock rooms (local .sgc mini-repos, gate-checked):
 skynet-dequantizer rooms list                          # inventory: name@version, classes, sha256, ❄ frozen
-skynet-dequantizer rooms import ./finqa-stock.sgc      # gate-checked (a bad bundle never lands)
-skynet-dequantizer rooms freeze finqa-stock.sgc        # writes the auditable sha256 dossier
-skynet-dequantizer rooms export finqa-stock ./shipped  # bundle + dossier, ready to share
+skynet-dequantizer rooms import ./fin-tables-stock.sgc # gate-checked (a bad bundle never lands)
+skynet-dequantizer rooms freeze fin-tables-stock       # writes the auditable sha256 dossier
+skynet-dequantizer rooms export fin-tables-stock ./out # bundle + dossier, ready to share
+
+# 4 — or as MCP tools for an agent host (Claude Code, any MCP client):
+claude mcp add skynet -- skynet-dequantizer mcp --routing routing.json
+# tools: ask · drift · metrics · lattice_load · hint · propose · critique
 ```
 
-Forge new stocks from any dataset with an executable oracle: `sg forge` (skynet-graph) — every admitted
-method passed a **zero-false-admission** gate, and the dossier proves it.
+`GET /healthz` is the ops readout (no key, no query content): policy, configured vs reachable tiers,
+loaded `.sgc` versions, stock size.
 
-## The guarantees (tested end-to-end, in this repo's suite)
+## Features × maturity
 
-- a covered query is served from **verified local stock at 0 frontier calls**; a miss escalates (you always
-  get an answer); the local side never fabricates → **0 hallucination by construction** on the covered slice;
-- bundles load **through the engine's admission gates** (version-gated; never a raw write) — including on
-  import into your room;
-- **no-egress, proven on real sockets**: an armed fail-closed guard on `net.connect` shows the appliance
-  connects to *nothing* but the declared frontier — with a negative control proving the guard has teeth.
-  Default policy is `no-egress`; multi-tier routing (`--routing`, `--policy`) is opt-in and policy-governed.
+Maturity uses a fixed 6-rung scale — 1 coherent idea · 2 design with pre-registered kill-gates ·
+3 mechanics proven · 4 measured at scale · 5 product-integrated · 6 field-adopted. Nothing is at 6:
+this is pre-launch. Scale details: [docs/honesty.html](docs/honesty.html).
 
-## Honest bounds
+| Feature | Maturity | Measured | Docs |
+|---|---|---|---|
+| **F1 — Low-quant repair** (certified stock steers the model; covered → 0 frontier calls) | `█████░` 5/6 product-integrated | SQL 8→63 % (N=201) · finance tables 7→62 % (N=120) · forge 0 false admissions | [docs](docs/features.html#f1) |
+| **F4 — External think mode** (`propose` → gated verdict + blame + tested options; `hint` menu) | `█████░` 5/6 product-integrated | one dialogue round 17/24 → 24/24 at zero false admissions | [docs](docs/features.html#f4) |
+| **F5 — External critical mind** (`critique`: witness gate, anchored generation, honest verdict) | `█████░` 5/6 surface · campaign numbers at 4/6 | coverage 77 % vs 58 % (48 args) · certified perimeter 12/24 → 24/24 · 0 fabrication in negative controls | [docs](docs/features.html#f5) |
+| **F6 — Local `.sgc` rooms** (list/import/export/freeze, sha256 dossiers, engine-gated loads) | `█████░` 5/6 product-integrated | gate-checked import; loads never bypass the engine gates | [docs](docs/features.html#f6) |
+| **F2 — Piece-by-piece zoom** (typed DAG on big tasks) | `████░░` 4/6 measured — **library-only today, not surfaced here (the known gap)** | math word problems ×3.25 [2.4–4.8] · financial-table QA ×2.54 [1.96–3.5], 560 tasks | [docs](docs/features.html#f2-gap) |
 
-The steering *orients* — a suggestion is not a correctness proof (guarantees are at stock **admission**, not
-at execution). The win lives on the typed, recurrent slice of your traffic; coverage depends on your stocks.
-Streaming is simulated; no per-tier timeout yet.
+## What actually runs
+
+- **`serve`** — `POST /v1/chat/completions`, `GET /v1/models`, `GET /healthz`. Default port 4747,
+  binds 127.0.0.1 on purpose. A covered query is served from verified local stock at 0 frontier calls;
+  a miss escalates (you always get an answer); the local side never fabricates — 0 hallucination by
+  construction on the covered slice.
+- **Escalation** — either a single frontier (`FRONTIER_MODEL=<path.gguf>` embedded, or `LLM_BASE=<url>`
+  any OpenAI-compatible endpoint), or **N-tier routing** (`--routing config.json`): ordered tiers, each
+  tagged with an egress class (`none` / `mid` / `frontier`), governed by a policy ceiling —
+  `no-egress` (default for routing configs) · `allow-mid` · `allow-all`. A query is **never** silently
+  sent to a forbidden tier: if the policy leaves nothing reachable, you get a typed `NO_REACHABLE_TIER`
+  refusal. The no-egress guarantee is enforced fail-closed on real sockets in the test suite, with a
+  negative control proving the guard has teeth.
+- **`mcp`** — the same verified stock + escalation over stdio (no HTTP socket). Tools:
+  `ask` (local-first, `{answer, source, cached, cost}`) · `drift` (invalidate a stale entry) ·
+  `metrics` (economy readout) · `lattice_load` (learn THROUGH the gate — the only registry write path) ·
+  `hint` (SOFT lane: advisory certified-shape menu, no guarantee attached) · `propose` (HARD lane: the
+  gate never yields; `force=true` records untrusted provenance, never admits) · `critique` (below).
+- **`rooms`** — `list | import <file> | export <name> <dest> | freeze <name>`. Import dry-loads the
+  bundle through the same gates the appliance uses; freeze writes the sha256 dossier that makes the
+  bundle a fixed, auditable reference.
+
+## The `critique` iteration contract
+
+`critique` runs the external critical mind on a question: declared viewpoints established through a
+witness gate over a statement pool, anchored generation of missing theses, a typed ledger, and a
+certification-aware verdict. The contract: **OPEN ledger points and an UNDECIDED verdict are a typed
+data request, not a dead end.** The tool cannot reach the web — the host (you, or your agent) gathers
+real statements that bear on the OPEN points, then calls `critique` again with `statements: [...]`
+(`"PRO: ..."` / `"CON: ..."` lines). The frame upgrades to MATERIAL and the margin can move honestly.
+A verdict is mechanical only at the measured margin bound (≥3 on free/declared frames, ≥2 on a
+certified perimeter); below it the deliverable is counts + coverage + an honest UNDECIDED — never a
+fake weighing.
+
+## Honest limits (what is NOT claimed)
+
+- **The guarantee is at stock admission, not at execution.** Runtime steering orients; a suggestion is
+  not a correctness proof. A runtime "trusted answers" cross-agreement tier was tested and **refuted**
+  — it was removed, and stays listed in [docs/honesty.html](docs/honesty.html).
+- **The win lives on the typed, recurrent slice of your traffic.** Coverage depends on your stocks;
+  forge yield is per-domain; amortization is a property of the domain's stereotypy.
+- **F2 zoom is not surfaced here.** The piece-by-piece decomposition is measured (rung 4/6) but
+  library-only in skynet-graph today; no MCP tool exposes it yet.
+- **`critique` bounds**: below the measured decidability margin the verdict is UNDECIDED by design;
+  entry templates are not yet form-robustness-tested; on FREE frames coverage is relative to the pool
+  (the payload says so).
+- Streaming is simulated; no per-tier timeout yet.
+- **Nothing is field-adopted (rung 6/6)** — no external replications yet. This is pre-launch.
 
 ## Env / flags
 
-`FRONTIER_MODEL` (gguf) or `LLM_BASE` (any OpenAI-compat endpoint) — required for escalation ·
-`LOCAL_MODEL` (semantic coverage: paraphrases hit the stock, opt-in) · `--room <dir>` (default `./sgc`) ·
-`--store <f.json>` (durable cross-restart stock) · `--port` (default 4747, binds 127.0.0.1 on purpose).
+`FRONTIER_MODEL` (gguf, embedded) or `LLM_BASE` (any OpenAI-compatible endpoint) — the single-frontier
+escalation · `--routing <config.json>` / `$SG_ROUTING` (N-tier) + `--policy` / `$SG_POLICY`
+(`no-egress|allow-mid|allow-all`) · `LOCAL_MODEL` (gguf — semantic coverage: paraphrases hit the stock,
+opt-in) · `--room <dir>` (default `./sgc`) · `--store <f.json>` (durable cross-restart stock,
+default `.skynet-stock.json`) · `--port` (default 4747, binds 127.0.0.1).
 
-AGPL-3.0-or-later · © 2026 Nathanael Braun
+---
+
+AGPL-3.0-or-later · © 2026 Nathanael Braun · solo-author project ·
+engine: [github.com/9pings/skynet-graph](https://github.com/9pings/skynet-graph) ·
+docs site: [`docs/`](docs/) (GitHub Pages) ·
+**pre-launch — nothing is field-adopted yet (rung 6/6)**
