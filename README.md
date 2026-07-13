@@ -1,4 +1,4 @@
-# wala
+# Wala
 
 > **Pre-launch — nothing is field-adopted yet (rung 6/6 is empty on every bar below).**
 > We publish maturity per feature and keep refuted claims on the page. Honesty is the product's USP,
