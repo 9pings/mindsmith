@@ -1,5 +1,12 @@
 # Mindsmith
 
+[![npm](https://img.shields.io/npm/v/mindsmith?logo=npm&color=cb3837)](https://www.npmjs.com/package/mindsmith)
+[![npm downloads](https://img.shields.io/npm/dm/mindsmith?color=cb3837)](https://www.npmjs.com/package/mindsmith)
+[![node](https://img.shields.io/node/v/mindsmith)](https://nodejs.org)
+[![license](https://img.shields.io/npm/l/mindsmith?color=blue)](./LICENSE)
+
+Built on the [skynet-graph](https://github.com/9pings/skynet-graph) reasoning engine — the substrate + combos this app puts to work.
+
 > **Pre-launch — nothing is field-adopted yet (rung 6/6 is empty on every bar below).**
 > We publish maturity per feature and keep refuted claims on the page. Honesty is the product's USP,
 > so it is also the documentation's. See [docs/honesty.html](docs/honesty.html).
