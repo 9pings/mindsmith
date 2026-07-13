@@ -1,5 +1,5 @@
 {
-  "name": "wala",
+  "name": "mindsmith",
   "version": "0.1.0",
   "license": "AGPL-3.0-or-later",
   "author": "Nathanael Braun <pp9ping@gmail.com>",
@@ -7,14 +7,14 @@
   "keywords": ["llm", "local-llm", "openai-compatible", "proxy", "mcp", "gguf", "quantization", "offline", "agpl", "skynet-graph"],
   "main": "./lib/app.js",
   "bin": {
-    "wala": "bin/wala"
+    "mindsmith": "bin/mindsmith"
   },
   "files": ["bin", "lib", "README.md", "LICENSE"],
   "engines": {
     "node": ">=18"
   },
   "scripts": {
-    "start": "node bin/wala serve",
+    "start": "node bin/mindsmith serve",
     "test": "node --test --test-force-exit test/*.test.js"
   },
   "dependencies": {

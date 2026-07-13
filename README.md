@@ -1,4 +1,4 @@
-# Wala
+# Mindsmith
 
 > **Pre-launch — nothing is field-adopted yet (rung 6/6 is empty on every bar below).**
 > We publish maturity per feature and keep refuted claims on the page. Honesty is the product's USP,
@@ -25,12 +25,12 @@ gate, never written.
 
 ```bash
 # Pre-launch note: not on npm yet. Until the release:
-#   git clone <this repo> && cd wala && npm install && npm test   # 26/26, GPU-free
-# Once published, the same commands work via:  npm i -g wala   or   npx wala
+#   git clone <this repo> && cd mindsmith && npm install && npm test   # 26/26, GPU-free
+# Once published, the same commands work via:  npm i -g mindsmith   or   npx mindsmith
 
 # 1 — serve (embedded gguf as the escalation):
-FRONTIER_MODEL=/path/model.gguf wala serve --room ./sgc
-# → wala → http://127.0.0.1:4747/v1   (OpenAI-compatible)
+FRONTIER_MODEL=/path/model.gguf mindsmith serve --room ./sgc
+# → mindsmith → http://127.0.0.1:4747/v1   (OpenAI-compatible)
 
 # 2 — point ANY OpenAI client at it (official SDKs, LangChain, Open WebUI, curl):
 #    baseURL = http://127.0.0.1:4747/v1     apiKey = anything
@@ -41,13 +41,13 @@ curl -si http://127.0.0.1:4747/v1/chat/completions \
 #   x-sg-served-from: local|frontier · x-sg-arm · x-sg-cost · x-sg-coverage · x-sg-saved · x-sg-sgc-version
 
 # 3 — your stock rooms (local .sgc mini-repos, gate-checked):
-wala rooms list                          # inventory: name@version, classes, sha256, ❄ frozen
-wala rooms import ./fin-tables-stock.sgc # gate-checked (a bad bundle never lands)
-wala rooms freeze fin-tables-stock       # writes the auditable sha256 dossier
-wala rooms export fin-tables-stock ./out # bundle + dossier, ready to share
+mindsmith rooms list                          # inventory: name@version, classes, sha256, ❄ frozen
+mindsmith rooms import ./fin-tables-stock.sgc # gate-checked (a bad bundle never lands)
+mindsmith rooms freeze fin-tables-stock       # writes the auditable sha256 dossier
+mindsmith rooms export fin-tables-stock ./out # bundle + dossier, ready to share
 
 # 4 — or as MCP tools for an agent host (Claude Code, any MCP client):
-claude mcp add wala -- wala mcp --routing routing.json
+claude mcp add mindsmith -- mindsmith mcp --routing routing.json
 # tools: ask · drift · metrics · lattice_load · hint · propose · critique
 ```
 
