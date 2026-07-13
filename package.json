@@ -1,6 +1,6 @@
 {
   "name": "mindsmith",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "license": "AGPL-3.0-or-later",
   "author": "Nathanael Braun <pp9ping@gmail.com>",
   "repository": { "type": "git", "url": "git+https://github.com/9pings/mindsmith.git" },
@@ -21,7 +21,7 @@
     "test": "node --test --test-force-exit test/*.test.js"
   },
   "dependencies": {
-    "skynet-graph": "^1.2.0"
+    "skynet-graph": "^1.3.0"
   },
   "optionalDependencies": {
     "node-llama-cpp": "^3.0.0"
