@@ -22,5 +22,8 @@
   },
   "dependencies": {
     "skynet-graph": "^1.2.0"
+  },
+  "optionalDependencies": {
+    "node-llama-cpp": "^3.0.0"
   }
 }

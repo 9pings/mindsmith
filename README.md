@@ -9,7 +9,7 @@ Built on the [skynet-graph](https://github.com/9pings/skynet-graph) reasoning en
 
 > **Pre-launch — nothing is field-adopted yet (rung 6/6 is empty on every bar below).**
 > We publish maturity per feature and keep refuted claims on the page. Honesty is the product's USP,
-> so it is also the documentation's. See [docs/honesty.html](docs/honesty.html).
+> so it is also the documentation's. See [docs/honesty.html](https://9pings.github.io/mindsmith/honesty.html).
 
 **Mindsmith is an external reasoning layer for your local LLM — an auditable critical mind, gated
 think-mode lanes, and verified-stock answers at zero frontier calls, from a mixture of certified
@@ -35,13 +35,16 @@ gate, never written.
 ## 60-second quickstart
 
 ```bash
-# Pre-launch note: not on npm yet. Until the release:
-#   git clone <this repo> && cd mindsmith && npm install && npm test   # 26/26, GPU-free
-# Once published, the same commands work via:  npm i -g mindsmith   or   npx mindsmith
+# Install (on npm):  npm i -g mindsmith   (per-project: npm i mindsmith · one-shot: npx mindsmith)
+# The demo/test suite lives in the repo — for those, git clone instead (npm is for building an app).
 
 # 1 — serve (embedded gguf as the escalation):
+#   the embedded gguf backend needs the local runtime once:  npm install node-llama-cpp  (prebuilt, no compile)
+#   on WSL, export this or the gguf silently runs on CPU:
+#     export LD_LIBRARY_PATH=/usr/lib/wsl/lib:/usr/lib/x86_64-linux-gnu
 FRONTIER_MODEL=/path/model.gguf mindsmith serve --room ./sgc
 # → mindsmith → http://127.0.0.1:4747/v1   (OpenAI-compatible)
+# (or skip the local runtime and use an endpoint: LLM_BASE=<url> mindsmith serve)
 
 # 2 — point ANY OpenAI client at it (official SDKs, LangChain, Open WebUI, curl):
 #    baseURL = http://127.0.0.1:4747/v1     apiKey = anything
@@ -69,15 +72,15 @@ loaded `.sgc` versions, stock size.
 
 Maturity uses a fixed 6-rung scale — 1 coherent idea · 2 design with pre-registered kill-gates ·
 3 mechanics proven · 4 measured at scale · 5 product-integrated · 6 field-adopted. Nothing is at 6:
-this is pre-launch. Scale details: [docs/honesty.html](docs/honesty.html).
+this is pre-launch. Scale details: [docs/honesty.html](https://9pings.github.io/mindsmith/honesty.html).
 
 | Feature | Maturity | Measured | Docs |
 |---|---|---|---|
-| **F1 — Low-quant repair** (certified stock steers the model; covered → 0 frontier calls) | `█████░` 5/6 product-integrated | SQL 8→63 % (N=201) · finance tables 7→62 % (N=120) · forge 0 false admissions | [docs](docs/features.html#f1) |
-| **F4 — External think mode** (`propose` → gated verdict + blame + tested options; `hint` menu) | `█████░` 5/6 product-integrated | one dialogue round 17/24 → 24/24 at zero false admissions | [docs](docs/features.html#f4) |
-| **F5 — External critical mind** (`critique`: witness gate, anchored generation, honest verdict) | `█████░` 5/6 surface · campaign numbers at 4/6 | coverage 77 % vs 58 % (48 args) · certified perimeter 12/24 → 24/24 · 0 fabrication in negative controls | [docs](docs/features.html#f5) |
-| **F6 — Local `.sgc` rooms** (list/import/export/freeze, sha256 dossiers, engine-gated loads) | `█████░` 5/6 product-integrated | gate-checked import; loads never bypass the engine gates | [docs](docs/features.html#f6) |
-| **F2 — Piece-by-piece zoom** (typed DAG on big tasks) | `████░░` 4/6 measured — **library-only today, not surfaced here (the known gap)** | math word problems ×3.25 [2.4–4.8] · financial-table QA ×2.54 [1.96–3.5], 560 tasks | [docs](docs/features.html#f2-gap) |
+| **F1 — Low-quant repair** (certified stock steers the model; covered → 0 frontier calls) | `█████░` 5/6 product-integrated | SQL 8→63 % (N=201) · finance tables 7→62 % (N=120) · forge 0 false admissions | [docs](https://9pings.github.io/mindsmith/features.html#f1) |
+| **F4 — External think mode** (`propose` → gated verdict + blame + tested options; `hint` menu) | `█████░` 5/6 product-integrated | one dialogue round 17/24 → 24/24 at zero false admissions | [docs](https://9pings.github.io/mindsmith/features.html#f4) |
+| **F5 — External critical mind** (`critique`: witness gate, anchored generation, honest verdict) | `█████░` 5/6 surface · campaign numbers at 4/6 | coverage 77 % vs 58 % (48 args) · certified perimeter 12/24 → 24/24 · 0 fabrication in negative controls | [docs](https://9pings.github.io/mindsmith/features.html#f5) |
+| **F6 — Local `.sgc` rooms** (list/import/export/freeze, sha256 dossiers, engine-gated loads) | `█████░` 5/6 product-integrated | gate-checked import; loads never bypass the engine gates | [docs](https://9pings.github.io/mindsmith/features.html#f6) |
+| **F2 — Piece-by-piece zoom** (typed DAG on big tasks) | `████░░` 4/6 measured — **library-only today, not surfaced here (the known gap)** | math word problems ×3.25 [2.4–4.8] · financial-table QA ×2.54 [1.96–3.5], 560 tasks | [docs](https://9pings.github.io/mindsmith/features.html#f2-gap) |
 
 ## Why not just…?
 
@@ -133,7 +136,7 @@ fake weighing.
 
 - **The guarantee is at stock admission, not at execution.** Runtime steering orients; a suggestion is
   not a correctness proof. A runtime "trusted answers" cross-agreement tier was tested and **refuted**
-  — it was removed, and stays listed in [docs/honesty.html](docs/honesty.html).
+  — it was removed, and stays listed in [docs/honesty.html](https://9pings.github.io/mindsmith/honesty.html).
 - **The win lives on the typed, recurrent slice of your traffic.** Coverage depends on your stocks;
   forge yield is per-domain; amortization is a property of the domain's stereotypy.
 - **F2 zoom is not surfaced here.** The piece-by-piece decomposition is measured (rung 4/6) but
@@ -156,5 +159,5 @@ default `.skynet-stock.json`) · `--port` (default 4747, binds 127.0.0.1).
 
 AGPL-3.0-or-later · © 2026 Nathanael Braun · solo-author project ·
 engine: [github.com/9pings/skynet-graph](https://github.com/9pings/skynet-graph) ·
-docs site: [`docs/`](docs/) (GitHub Pages) ·
+docs site: [9pings.github.io/mindsmith](https://9pings.github.io/mindsmith/) (GitHub Pages) ·
 **pre-launch — nothing is field-adopted yet (rung 6/6)**
