@@ -1,0 +1,29 @@
+# npm tarball = ONLY what's needed to EXECUTE + the .md docs.
+# The package.json "files" allowlist is the PRIMARY control (default-deny); this denylist is the
+# belt-and-suspenders. Verify with `npm pack --dry-run` — the tarball must be bin/ + lib/ + README + LICENSE.
+
+# non-exec / dev
+/test/
+/docs/
+/scripts/
+node_modules/
+*.log
+*.tgz
+.env
+.env.*
+.tmp
+
+# OS / editor cruft
+.DS_Store
+.AppleDouble
+.LSOverride
+Icon
+._*
+.Spotlight-V100
+.Trashes
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+.idea
+*.sublime-workspace
