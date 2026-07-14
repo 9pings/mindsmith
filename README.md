@@ -1,15 +1,23 @@
 # MindSmith
 
+<p align="center">
+<img src="./docs/img/headImg.png">
+</p>
+
+<p align="center">
+
 [![npm](https://img.shields.io/npm/v/mindsmith?logo=npm&color=cb3837)](https://www.npmjs.com/package/mindsmith)
 [![npm downloads](https://img.shields.io/npm/dm/mindsmith?color=cb3837)](https://www.npmjs.com/package/mindsmith)
 [![node](https://img.shields.io/node/v/mindsmith)](https://nodejs.org)
 [![license](https://img.shields.io/npm/l/mindsmith?color=blue)](./LICENSE)
 
-**Your small model fits your VRAM. Quantization stole its judgment on the way down.
-mindsmith forges it back.** A certified method vocabulary steers it, an external critical
-mind checks it, and covered questions are answered from *your* verified stock at **zero
-frontier calls** — all on your box, nothing leaving by default. Point any OpenAI client at
-it and go. The `-smith` is literal: you forge a mind for the model you can actually run.
+</p>
+
+**MindSmith turns your LLM into a verifiable reasoning appliance.** A certified method
+vocabulary steers its output, an external critical mind checks its work, and covered questions
+are answered from *your* verified stock at **zero frontier calls** — all on your box, nothing
+leaving by default. Point any OpenAI client at it and go. Works for any model, any size;
+low-quant models benefit the most, but the guarantees hold regardless.
 
 > **Pre-launch. Nothing here is field-adopted yet — rung 6/6 is empty on every bar below.**
 > We publish maturity per feature, and **a refuted claim comes off the page the day it falls**
@@ -21,11 +29,12 @@ substrate + the combos this appliance puts to work.
 
 ## What it does
 
-- **Forge — repair the low-quant.** A menu of *certified* method shapes steers the model's
-  output; a covered query is served from your verified local stock at **0 frontier calls**
-  and can't hallucinate by construction. Measured on the *same* model at two quant levels:
-  SQL covered queries **8→63 %** (N=201; high-quant reference 46→92 %) · finance-table
-  traffic **7→62 %** (N=120; 20→78 %).
+- **Forge — certified reasoning on demand.** A menu of *certified* method shapes steers
+the model's output; a covered query is served from your verified local stock at **0 frontier
+calls** and can't hallucinate by construction. Measured on the *same* model at two quant
+levels: SQL covered queries **8→63 %** (N=201; high-quant reference 46→92 %) · finance-table
+  traffic **7→62 %** (N=120; 20→78 %). Low-quant models see the biggest gains, but the
+  mechanism works for any LLM.
 - **Check — an external mind, not a self-pep-talk.** `critique` weighs a question over a
   witness-gated pool and returns an honest, certification-aware verdict (or an honest
   UNDECIDED). `propose` / `hint` are gated think-mode lanes that hand back a *tested* verdict
@@ -77,19 +86,18 @@ reachable tiers, loaded `.sgc` versions, stock size.
 
 ## One model. One load. The whole appliance.
 
-Most VRAM-constrained boxes have room for exactly **one** model. Fine — that's all mindsmith
-needs:
+You can run mindsmith with any model that fits your hardware:
 
 ```bash
-mindsmith serve --model /path/model.gguf     # ONE gguf, ONE VRAM load
+mindsmith serve --model /path/model.gguf
 ```
 
-That single load is doing **both** jobs at once. Your users get a full local LLM server whose
+That single load handles **both** jobs at once: your users get a full local LLM server whose
 answers run **with** native reasoning (think). The graph's structured work — coverage,
 `critique`, `propose` — runs on the **same** weights **without** think. How? The thinking
-budget is **per-call, not per-load**: one set of weights in VRAM, two behaviours out of it. A
-box that can hold a single model still gets the entire appliance — server *and* value-add — for
-one model's worth of memory.
+budget is **per-call, not per-load**: one set of weights in VRAM, two behaviours out of it.
+The entire appliance — server and reasoning layer — runs on a single model's memory
+footprint.
 
 Tune the load: `--ctx <N>` · `--gpu auto|cuda|metal|vulkan|false` · `--gpu-layers <N>` ·
 `--think <tokens>` (the answer-side reasoning budget, default 1024). Need a custom llama.cpp
@@ -105,7 +113,7 @@ detail: [honesty](https://9pings.github.io/mindsmith/honesty.html).
 
 | Feature | Maturity | Measured |
 |---|---|---|
-| **F1 — Low-quant repair** — certified stock steers the model; covered → 0 frontier calls | `█████░` 5/6 product-integrated | SQL **8→63 %** (N=201) · finance tables **7→62 %** (N=120) · forge **0 false admissions** (3 datasets × 2 forge models) |
+| **F1 — Certified stock steering** — certified stock steers the model; covered → 0 frontier calls | `█████░` 5/6 product-integrated | SQL **8→63 %** (N=201) · finance tables **7→62 %** (N=120) · forge **0 false admissions** (3 datasets × 2 forge models) |
 | **F4 — External think mode** — `propose` → gated verdict + blame + gate-tested options; `hint` menu | `█████░` 5/6 product-integrated | one dialogue round **17/24 → 24/24** at **zero false admissions**; a forced write lands UNTRUSTED, never admitted |
 | **F5 — External critical mind** — `critique`: witness gate, anchored generation, honest verdict | `█████░` 5/6 surface (campaign numbers at 4/6) | coverage **77 % vs 58 %** (48 args) · certified perimeter **12/24 → 24/24** · **0 fabrication** in negative controls (8/8 injected theses retracted) |
 | **F6 — Local `.sgc` rooms** — list/import/export/freeze, sha256 dossiers, engine-gated loads | `█████░` 5/6 product-integrated | gate-checked import; loads never bypass the engine gates |
@@ -113,27 +121,28 @@ detail: [honesty](https://9pings.github.io/mindsmith/honesty.html).
 
 ## The illusion this kills
 
-Ask a low-quant model to weigh two sides of a real question and it picks a winner with total
-confidence — and is right about as often as a coin. In a head-to-head (24 composed perimeters,
-gold hidden, every arm re-run bit-identical), the naive single call and the *same model with a
+Ask a model to weigh two sides of a real question and it often picks a winner with
+total confidence — even when it's wrong. In a head-to-head (24 composed perimeters, gold
+hidden, every arm re-run bit-identical), the naive single call and the *same model with a
 1024-token native think budget* both score **13/24 ≈ chance**, each throwing 11 confident wrong
 verdicts and refusing zero times. And it doesn't know: measured self-believed coverage runs
 **~106 %** against a real gold of **64–77 %** — it's sure it covered everything when it didn't.
 
 The external critical mind renders **0 wrong verdicts across all 48 debates**. Two things buy
 that. First, it decides mechanically **only at a measured margin** — and below it returns counts
-+ coverage + an honest **UNDECIDED** instead of flipping a coin. Second, a **certified
-perimeter closes the illusion**: declaring what you're judging against takes the decision from
-**12/24 to 24/24**. mindsmith declines; it doesn't guess. That's the whole point.
++ coverage + an honest **UNDECIDED** instead of guessing. Second, a **certified perimeter
+closes the illusion**: declaring what you're judging against takes the decision from
+**12/24 to 24/24**. mindsmith declines to guess; that's the whole point.
 
 ## Why not just…?
 
-- **…run a bigger model?** If it fits your VRAM, do. mindsmith is for the model you *can*
-  run: certified-stock steering recovers most of what quantization broke (SQL 8→63 %, finance
-  7→62 %), at 0 frontier calls on the covered slice.
+- **…run a bigger model?** If it fits your VRAM, do. mindsmith works with the model
+you have: certified-stock steering recovers accuracy on covered queries (SQL 8→63 %,
+finance 7→62 %), at 0 frontier calls on the covered slice.
 - **…use the model's think mode, or a self-critique prompt?** The 2024–25 literature and our
   own 3-form refutation agree: self-critique underperforms *external* feedback with localized
-  blame. A low-quant can't audit itself. The `propose` gate and `critique` tool are that
+  blame. A model can't audit itself reliably under quantization constraints. The `propose` gate
+  and `critique` tool are that
   external feedback — structural, auditable, and un-arguable-with (a forced write lands
   UNTRUSTED, never admitted). A prompt can always be talked out of it; a gate can't.
 - **…RAG or a prompt library?** Retrieval trusts whatever got indexed. A room only admits
