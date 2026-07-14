@@ -3,12 +3,12 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>skynet-dequantizer — covered queries served from verified local stock</title>
+<title>MindSmith — covered queries served from verified local stock</title>
 <meta name="description" content="An OpenAI-compatible local endpoint where covered queries are served from your verified .sgc stock at zero frontier calls. Local-first, no egress by default, AGPL.">
-<meta property="og:title" content="skynet-dequantizer — repair what quantization broke, with stock you can audit">
+<meta property="og:title" content="MindSmith — repair what quantization broke, with stock you can audit">
 <meta property="og:description" content="OpenAI-compatible local endpoint: covered queries served from your verified .sgc stock at zero frontier calls. No egress by default. Maturity published per feature; refuted claims kept on the page.">
 <meta property="og:type" content="website">
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%230f1317'/%3E%3Ctext x='16' y='22' text-anchor='middle' font-family='monospace' font-size='16' fill='%23e5a03c'%3Edq%3C/text%3E%3C/svg%3E">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%230f1317'/%3E%3Ctext x='16' y='22' text-anchor='middle' font-family='monospace' font-size='16' fill='%23e5a03c'%3EMS%3C/text%3E%3C/svg%3E">
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -17,7 +17,7 @@
 
 <header class="site-head">
   <div class="wrap">
-    <a class="wordmark" href="index.html">skynet-<span class="tld">dequantizer</span></a>
+    <a class="wordmark" href="index.html">MindSmith</a>
     <nav class="site-nav" aria-label="Site">
       <a href="index.html" aria-current="page">Overview</a>
       <a href="features.html">Features</a>
@@ -43,7 +43,7 @@
       <strong>8→63&nbsp;%</strong> (high-quant reference 46→92&nbsp;%, N=201) · finance-table traffic
       <strong>7→62&nbsp;%</strong> (20→78&nbsp;%, N=120) — every measured number on this site carries
       its N and protocol (engine repo); terminal-transcript values are labeled illustrative.</p>
-    <p><code class="cmd"><span class="p">$ </span>FRONTIER_MODEL=/path/model.gguf skynet-dequantizer serve --room ./sgc</code></p>
+    <p><code class="cmd"><span class="p">$ </span>FRONTIER_MODEL=/path/model.gguf mindsmith serve --room ./sgc</code></p>
   </div>
 
   <!-- ── get it ─────────────────────────────────────────────────────── -->
@@ -52,26 +52,26 @@
     <h2 id="h-getit">60-second quickstart</h2>
     <p class="lead"><strong>Pre-launch note:</strong> not on npm yet. Until the release, clone and
       run from source — the test suite is GPU-free. Once published, the same commands work via
-      <code>npm i -g skynet-dequantizer</code> or <code>npx skynet-dequantizer</code>.</p>
+      <code>npm i -g mindsmith</code> or <code>npx mindsmith</code>.</p>
 <pre><code># until the npm release:
 git clone https://github.com/9pings/skynet-dequantizer && cd skynet-dequantizer
 npm install && npm test                     # 26/26, GPU-free
 
 # 1 — serve (embedded gguf as the escalation):
-FRONTIER_MODEL=/path/model.gguf skynet-dequantizer serve --room ./sgc
+FRONTIER_MODEL=/path/model.gguf mindsmith serve --room ./sgc
 #    → http://127.0.0.1:4747/v1   (OpenAI-compatible)
 
 # 2 — point ANY OpenAI client at it (official SDKs, LangChain, Open WebUI, curl):
 #    baseURL = http://127.0.0.1:4747/v1     apiKey = anything
 
 # 3 — your stock rooms (local .sgc mini-repos, gate-checked):
-skynet-dequantizer rooms list|import|export|freeze
+mindsmith rooms list|import|export|freeze
 
 # 4 — or as MCP tools for an agent host (Claude Code, any MCP client):
-claude mcp add skynet -- skynet-dequantizer mcp --routing routing.json</code></pre>
+claude mcp add skynet -- mindsmith mcp --routing routing.json</code></pre>
     <p class="lead">AI agent reading this? The repo's <code>README.md</code> is written to be
       machine-readable, and the whole tool surface is one command away over MCP
-      (<code>skynet-dequantizer mcp</code>) — typed refusals included.</p>
+      (<code>mindsmith mcp</code>) — typed refusals included.</p>
   </section>
 
   <!-- ── the shape of the thing ─────────────────────────────────────── -->
@@ -82,7 +82,7 @@ claude mcp add skynet -- skynet-dequantizer mcp --routing routing.json</code></p
       tiers — and a query is never silently sent to a tier your policy forbids: the refusal is
       typed (<code>NO_REACHABLE_TIER</code>), not swallowed.</p>
 
-    <div class="diagram" role="img" aria-label="Diagram: any OpenAI client points its baseURL at the dequantizer endpoint. Covered queries are answered from the verified .sgc room at zero frontier calls; misses go to policy-gated escalation tiers. A padlock marks: no egress by default.">
+    <div class="diagram" role="img" aria-label="Diagram: any OpenAI client points its baseURL at the MindSmith endpoint. Covered queries are answered from the verified .sgc room at zero frontier calls; misses go to policy-gated escalation tiers. A padlock marks: no egress by default.">
       <svg viewBox="0 0 880 330" xmlns="http://www.w3.org/2000/svg" font-family="ui-monospace, Menlo, Consolas, monospace" font-size="13">
         <defs>
           <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
@@ -108,7 +108,7 @@ claude mcp add skynet -- skynet-dequantizer mcp --routing routing.json</code></p
 
         <!-- appliance -->
         <rect x="300" y="112" width="230" height="92" rx="8" fill="#151b21" stroke="#e5a03c"/>
-        <text x="320" y="142" fill="#d8d4c8" font-weight="bold">skynet-dequantizer</text>
+        <text x="320" y="142" fill="#d8d4c8" font-weight="bold">MindSmith</text>
         <text x="320" y="164" fill="#97a1ac" font-size="11.5">serve · mcp · rooms</text>
         <text x="320" y="184" fill="#e5a03c" font-size="11.5">x-sg-* provenance headers</text>
 
@@ -145,10 +145,10 @@ claude mcp add skynet -- skynet-dequantizer mcp --routing routing.json</code></p
     <div class="term">
       <div class="term-head" aria-hidden="true">
         <span class="dot"></span><span class="dot"></span><span class="dot"></span>
-        <span>skynet-dequantizer serve</span>
+        <span>mindsmith serve</span>
         <span class="cap">illustrative transcript</span>
       </div>
-      <pre data-type><span class="ln c-cmd">$ FRONTIER_MODEL=~/models/model-q2.gguf skynet-dequantizer serve --room ./sgc</span><span class="ln c-out">skynet-dequantizer → http://127.0.0.1:4747/v1   (OpenAI-compatible)</span><span class="ln c-out">room ./sgc: methods=1 lattice=1</span><span class="ln"> </span><span class="ln c-cmd">$ curl -si http://127.0.0.1:4747/v1/chat/completions \</span><span class="ln c-cmd">    -H 'content-type: application/json' \</span><span class="ln c-cmd">    -d '{"messages":[{"role":"user","content":"From the FY25 table: operating margin, two decimals."}]}'</span><span class="ln c-out">HTTP/1.1 200 OK</span><span class="ln c-hdr">x-sg-served-from: local</span><span class="ln c-hdr">x-sg-arm: match</span><span class="ln c-hdr">x-sg-cost: 0</span><span class="ln c-hdr">x-sg-coverage: 0.62</span><span class="ln c-hdr">x-sg-saved: 41</span><span class="ln c-hdr">x-sg-sgc-version: fin-tables-stock@1.0.0</span><span class="ln"> </span><span class="ln c-ok">{"choices":[{"message":{"role":"assistant","content":"operating margin = 18.42 %"},"finish_reason":"stop"}], …}</span></pre>
+      <pre data-type><span class="ln c-cmd">$ FRONTIER_MODEL=~/models/model-q2.gguf mindsmith serve --room ./sgc</span><span class="ln c-out">mindsmith → http://127.0.0.1:4747/v1   (OpenAI-compatible)</span><span class="ln c-out">room ./sgc: methods=1 lattice=1</span><span class="ln"> </span><span class="ln c-cmd">$ curl -si http://127.0.0.1:4747/v1/chat/completions \</span><span class="ln c-cmd">    -H 'content-type: application/json' \</span><span class="ln c-cmd">    -d '{"messages":[{"role":"user","content":"From the FY25 table: operating margin, two decimals."}]}'</span><span class="ln c-out">HTTP/1.1 200 OK</span><span class="ln c-hdr">x-sg-served-from: local</span><span class="ln c-hdr">x-sg-arm: match</span><span class="ln c-hdr">x-sg-cost: 0</span><span class="ln c-hdr">x-sg-coverage: 0.62</span><span class="ln c-hdr">x-sg-saved: 41</span><span class="ln c-hdr">x-sg-sgc-version: fin-tables-stock@1.0.0</span><span class="ln"> </span><span class="ln c-ok">{"choices":[{"message":{"role":"assistant","content":"operating margin = 18.42 %"},"finish_reason":"stop"}], …}</span></pre>
       <p class="term-note">illustrative transcript — the values are examples; endpoints, boot lines
         and header names match the real code. Click the terminal (or focus it and press Enter) to
         skip the animation, if it is playing.</p>
@@ -167,10 +167,10 @@ claude mcp add skynet -- skynet-dequantizer mcp --routing routing.json</code></p
     <div class="term">
       <div class="term-head" aria-hidden="true">
         <span class="dot"></span><span class="dot"></span><span class="dot"></span>
-        <span>skynet-dequantizer mcp</span>
+        <span>mindsmith mcp</span>
         <span class="cap">illustrative transcript</span>
       </div>
-      <pre data-type><span class="ln c-cmd">$ claude mcp add skynet -- skynet-dequantizer mcp --routing routing.json</span><span class="ln c-out">skynet-dequantizer mcp ready — tools: ask, drift, metrics, lattice_load, hint, propose, critique</span><span class="ln"> </span><span class="ln c-dim"># the host calls the critique tool on a decision:</span><span class="ln c-cmd">&gt; critique { "topic": "Adopt engine X for the reporting pipeline?" }</span><span class="ln c-out">{</span><span class="ln c-hdr">  "frameStatus": "FREE",</span><span class="ln c-hdr">  "verdict": "UNDECIDED",</span><span class="ln c-out">  "counts": { "PRO": 3, "CON": 2 },  "margin": 1,  "threshold": 3,</span><span class="ln c-out">  "ledger": [</span><span class="ln c-out">    { "side": "PRO", "kind": "declared",  "status": "active", "witnesses": ["s1","s4"], "text": "…" },</span><span class="ln c-out">    { "side": "CON", "kind": "generated", "status": "active", "witnesses": ["s2"],      "text": "…" },</span><span class="ln c-open">    { "side": "CON", "kind": "declared",  "status": "open",   "witnesses": null,        "text": "migration cost is unquantified" }</span><span class="ln c-out">  ],</span><span class="ln c-ok">  "advice": "This is a typed data request, not a dead end: gather statements that</span><span class="ln c-ok">             genuinely bear on the OPEN points [migration cost is unquantified], then</span><span class="ln c-ok">             call critique again with statements=[...] — the frame becomes MATERIAL</span><span class="ln c-ok">             and the margin can move honestly."</span><span class="ln c-out">}</span></pre>
+      <pre data-type><span class="ln c-cmd">$ claude mcp add skynet -- mindsmith mcp --routing routing.json</span><span class="ln c-out">mindsmith mcp ready — tools: ask, drift, metrics, lattice_load, hint, propose, critique</span><span class="ln"> </span><span class="ln c-dim"># the host calls the critique tool on a decision:</span><span class="ln c-cmd">&gt; critique { "topic": "Adopt engine X for the reporting pipeline?" }</span><span class="ln c-out">{</span><span class="ln c-hdr">  "frameStatus": "FREE",</span><span class="ln c-hdr">  "verdict": "UNDECIDED",</span><span class="ln c-out">  "counts": { "PRO": 3, "CON": 2 },  "margin": 1,  "threshold": 3,</span><span class="ln c-out">  "ledger": [</span><span class="ln c-out">    { "side": "PRO", "kind": "declared",  "status": "active", "witnesses": ["s1","s4"], "text": "…" },</span><span class="ln c-out">    { "side": "CON", "kind": "generated", "status": "active", "witnesses": ["s2"],      "text": "…" },</span><span class="ln c-open">    { "side": "CON", "kind": "declared",  "status": "open",   "witnesses": null,        "text": "migration cost is unquantified" }</span><span class="ln c-out">  ],</span><span class="ln c-ok">  "advice": "This is a typed data request, not a dead end: gather statements that</span><span class="ln c-ok">             genuinely bear on the OPEN points [migration cost is unquantified], then</span><span class="ln c-ok">             call critique again with statements=[...] — the frame becomes MATERIAL</span><span class="ln c-ok">             and the margin can move honestly."</span><span class="ln c-out">}</span></pre>
       <p class="term-note">illustrative transcript — payload fields, statuses and the advice
         contract match the real tool; the topic and ledger texts are examples.</p>
     </div>

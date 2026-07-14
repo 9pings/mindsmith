@@ -1,4 +1,4 @@
-# mindsmith
+# MindSmith
 
 [![npm](https://img.shields.io/npm/v/mindsmith?logo=npm&color=cb3837)](https://www.npmjs.com/package/mindsmith)
 [![npm downloads](https://img.shields.io/npm/dm/mindsmith?color=cb3837)](https://www.npmjs.com/package/mindsmith)
