@@ -3,10 +3,10 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>MindSmith — covered queries served from verified local stock</title>
-<meta name="description" content="An OpenAI-compatible local endpoint where covered queries are served from your verified .sgc stock at zero frontier calls. Local-first, no egress by default, AGPL.">
-<meta property="og:title" content="MindSmith — repair what quantization broke, with stock you can audit">
-<meta property="og:description" content="OpenAI-compatible local endpoint: covered queries served from your verified .sgc stock at zero frontier calls. No egress by default. Maturity published per feature; refuted claims kept on the page.">
+<title>MindSmith — graph workspaces & reasoning tools for your LLM, over MCP</title>
+<meta name="description" content="Manage named, persistent graph workspaces (debates, plans, notepads — every write attributed) and use the skynet-graph reasoning engine directly from your LLM: MCP tools + an OpenAI-compatible local endpoint over your verified stock. Local-first, no egress by default, AGPL.">
+<meta property="og:title" content="MindSmith — graph workspaces & reasoning tools for your LLM, over MCP">
+<meta property="og:description" content="The appliance over the skynet-graph engine: named persistent graph instances your agents grow across sessions, an external critical mind, gated think-mode lanes, piece-by-piece zoom — and a local endpoint over your verified stock. Maturity published per feature; refuted claims kept on the page.">
 <meta property="og:type" content="website">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%230f1317'/%3E%3Ctext x='16' y='22' text-anchor='middle' font-family='monospace' font-size='16' fill='%23e5a03c'%3EMS%3C/text%3E%3C/svg%3E">
 <link rel="stylesheet" href="style.css">
@@ -31,21 +31,23 @@
 
 <div class="wrap">
   <div class="hero">
-    <p class="eyebrow"><span class="k">x-sg-served-from:</span> local</p>
-    <h1>Repair what quantization broke — with stock <em>you can audit</em>.</h1>
-    <p class="sub">The ready-made appliance over the
-      <a href="https://github.com/9pings/skynet-graph">skynet-graph</a> engine: an
-      <strong>OpenAI-compatible local endpoint</strong> where covered queries are served from
-      <strong>your verified <code>.sgc</code> stock at zero frontier calls</strong> — plus
-      <strong>named persistent graph workspaces</strong> your agents grow across sessions (a living
-      debate, a roadmap that reopens, a shared notepad — every write attributed), an external
-      critical mind, gated assistant lanes, and piece-by-piece serving of big tasks.
+    <p class="eyebrow"><span class="k">mindsmith://</span>dialectic/debate-1</p>
+    <h1>Graph workspaces your agents own — and the engine's reasoning, <em>one MCP tool away</em>.</h1>
+    <p class="sub">MindSmith is <strong>the appliance for managing living reasoning graphs</strong>
+      over the <a href="https://github.com/9pings/skynet-graph">skynet-graph</a> engine — and for
+      using the engine's features directly from your LLM. Your agents get <strong>named persistent
+      workspaces</strong> they grow across sessions (a <code>dialectic</code> debate, a
+      <code>plan</code> that reopens with a reason, a shared <code>notepad</code> — every write
+      attributed, every workspace forkable and shareable), plus the guarded toolset: an external
+      critical mind, gated think-mode lanes, piece-by-piece serving of big tasks. Underneath, an
+      <strong>OpenAI-compatible local endpoint</strong> serves covered queries from
+      <strong>your verified <code>.sgc</code> stock at zero frontier calls</strong>.
       <strong>Nothing leaves your machine by default.</strong></p>
     <p class="sub">Measured on the same model at two quant levels: SQL covered queries low-quant
       <strong>8→63&nbsp;%</strong> (high-quant reference 46→92&nbsp;%, N=201) · finance-table traffic
       <strong>7→62&nbsp;%</strong> (20→78&nbsp;%, N=120) — every measured number on this site carries
       its N and protocol (engine repo); terminal-transcript values are labeled illustrative.</p>
-    <p><code class="cmd"><span class="p">$ </span>FRONTIER_MODEL=/path/model.gguf mindsmith serve --room ./sgc</code></p>
+    <p><code class="cmd"><span class="p">$ </span>claude mcp add mindsmith -- mindsmith mcp</code></p>
   </div>
 
   <!-- ── get it ─────────────────────────────────────────────────────── -->
@@ -59,19 +61,20 @@
 git clone https://github.com/9pings/mindsmith && cd mindsmith
 npm install && npm test                     # GPU-free suite
 
-# 1 — serve (embedded gguf as the escalation):
-FRONTIER_MODEL=/path/model.gguf mindsmith serve --room ./sgc
-#    → http://127.0.0.1:4747/v1   (OpenAI-compatible)
+# 1 — MCP tools for an agent host (Claude Code, any MCP client) — the instance
+#     service (dialectic · plan · notepad workspaces) is on by default:
+claude mcp add mindsmith -- mindsmith mcp
 
-# 2 — point ANY OpenAI client at it (official SDKs, LangChain, Open WebUI, curl):
-#    baseURL = http://127.0.0.1:4747/v1     apiKey = anything
+# 2 — the appliance tier: serve an OpenAI endpoint (embedded gguf as the escalation):
+FRONTIER_MODEL=/path/model.gguf mindsmith serve --room ./sgc
+#    → http://127.0.0.1:4747/v1  ·  any OpenAI client: baseURL = that, apiKey = anything
 
 # 3 — your stock rooms (local .sgc mini-repos, gate-checked):
 mindsmith rooms list|import|export|freeze
 
-# 4 — or as MCP tools for an agent host (Claude Code, any MCP client) — the
-#     instance service (dialectic · plan · notepad workspaces) is on by default:
-claude mcp add mindsmith -- mindsmith mcp</code></pre>
+# 4 — share a workspace out of band (the .sgp pack IS the wire format):
+mindsmith serve --instances ~/.mindsmith/instances
+curl -O http://127.0.0.1:4747/instances/dialectic/dialectic-1</code></pre>
     <p class="lead">AI agent reading this? The repo's <code>README.md</code> is written to be
       machine-readable, and the whole tool surface is one command away over MCP
       (<code>mindsmith mcp</code>) — typed refusals included.</p>
@@ -137,9 +140,31 @@ claude mcp add mindsmith -- mindsmith mcp</code></pre>
     </div>
   </section>
 
+  <!-- ── terminal: the instance service ─────────────────────────────── -->
+  <section aria-labelledby="h-instances-demo">
+    <p class="kicker">See it run — the working memory</p>
+    <h2 id="h-instances-demo">A debate your agents grow for days — as MCP tools</h2>
+    <p class="lead">A type descriptor declares a workspace's typed actions once; mindsmith generates
+      the tools, dispatches, persists (<code>.sgp</code> packs) and shares. Day-2 evidence is
+      explored against the whole <em>grown</em> pool; every write names its agent; and
+      <code>plan_sync</code> hands your host the typed task-list delta — the <code>reopen</code> op
+      included. <a href="features.html#instances">What holds by construction →</a></p>
+
+    <div class="term">
+      <div class="term-head" aria-hidden="true">
+        <span class="dot"></span><span class="dot"></span><span class="dot"></span>
+        <span>mindsmith mcp — instances</span>
+        <span class="cap">illustrative transcript</span>
+      </div>
+      <pre data-type><span class="ln c-dim"># day 1 — an agent opens a debate workspace:</span><span class="ln c-cmd">&gt; instances_create { "type": "dialectic", "agent": "claude-A", "title": "Adopt engine X?",</span><span class="ln c-cmd">                     "seed": { "topic": "Adopt engine X for the reporting pipeline?", "statements": […] } }</span><span class="ln c-ok">{ "id": "dialectic-1", "uri": "mindsmith://dialectic/dialectic-1" }</span><span class="ln"> </span><span class="ln c-dim"># day 2, another session, another agent — evidence lands on the GROWN pool:</span><span class="ln c-cmd">&gt; dialectic_addArguments { "id": "dialectic-1", "agent": "claude-B",</span><span class="ln c-cmd">                           "statements": [{ "side": "CON", "text": "migration quote came back: 6 weeks" }] }</span><span class="ln c-out">{ "ok": true, "action": "addArguments", "by": "claude-B" }</span><span class="ln c-cmd">&gt; dialectic_state { "id": "dialectic-1" }</span><span class="ln c-out">{ "verdict": "UNDECIDED", "counts": { "PRO": 1, "CON": 1 }, "pool": 5, "ledger": [ … ] }</span><span class="ln"> </span><span class="ln c-dim"># who wrote what, per revision — attribution is first-class:</span><span class="ln c-cmd">&gt; instances_revisions { "id": "dialectic-1" }</span><span class="ln c-hdr">{ "current": 7, "revisions": [ …, { "rev": 6, "atoms": 3, "by": ["claude-B"] } ] }</span><span class="ln"> </span><span class="ln c-dim"># share it out of band — the .sgp pack IS the wire artifact (byte-identical):</span><span class="ln c-cmd">$ curl -O http://127.0.0.1:4747/instances/dialectic/dialectic-1</span></pre>
+      <p class="term-note">illustrative transcript — tool names, payload shapes, the uri scheme and
+        the attribution contract match the real code; ids and texts are examples.</p>
+    </div>
+  </section>
+
   <!-- ── terminal: serve + curl ─────────────────────────────────────── -->
   <section aria-labelledby="h-serve">
-    <p class="kicker">See it run</p>
+    <p class="kicker">The appliance tier</p>
     <h2 id="h-serve">Boot, then point any OpenAI client at it</h2>
     <p class="lead">Every completion carries provenance headers: which side answered
       (<code>x-sg-served-from</code>), which arm, the cost, live coverage, frontier calls saved so
@@ -160,7 +185,7 @@ claude mcp add mindsmith -- mindsmith mcp</code></pre>
 
   <!-- ── terminal: mcp critique ─────────────────────────────────────── -->
   <section aria-labelledby="h-mcp">
-    <p class="kicker">Or as MCP tools</p>
+    <p class="kicker">The external critical mind</p>
     <h2 id="h-mcp">The critical mind returns UNDECIDED — as typed data</h2>
     <p class="lead">Register the same appliance as MCP tools for an agent host. The
       <code>critique</code> tool never fakes a weighing: below the measured decidability margin it
