@@ -13,6 +13,13 @@
 //   mindsmith mcp    same flags/env as serve, NO http socket — the MCP tool surface (stdio) over the
 //                             same verified stock + escalation; stdout = protocol.
 //                             Register:  claude mcp add mindsmith -- mindsmith mcp --routing <config.json>
+//                             + the INSTANCE SERVICE (on by default): named persistent graph instances
+//                             (notepad, dialectic) as typed tools generated from their descriptors —
+//                             `<type>_<action>` + instances_{create,search,fork,delete,revisions,sync}.
+//                             --instances <dir> (conf instances.dir, default ~/.mindsmith/instances) ·
+//                             --placement worker|in-proc (conf instances.placement, default worker) ·
+//                             --no-instances disables. Worker placement resolves the dialectic model
+//                             via env LLM_BASE (inherited); in-proc rides the same ask as `critique`.
 //   mindsmith rooms  list | import <file.sgc> | export <name> <destDir> | freeze <name>   [--room <dir>]
 //                             your local SGC room: inventory (sha256 + frozen dossiers), gate-checked import
 //                             (a malformed bundle is refused, never written), export with dossier, freeze
@@ -54,6 +61,10 @@ if ( !cmd || cmd === '--help' || cmd === '-h' || cmd === 'help' ) {
 		'     optional (separate coverage model): env LOCAL_MODEL=<path.gguf>. On WSL, export',
 		'               LD_LIBRARY_PATH=/usr/lib/wsl/lib:/usr/lib/x86_64-linux-gnu  or the gguf silently runs on CPU.',
 		'  mindsmith mcp   [same flags/env as serve]                      MCP tool surface over stdio (no http socket)',
+		'     instance service (on by default): named persistent graph instances as typed tools',
+		'       --instances <dir>  pack directory (conf instances.dir, default ~/.mindsmith/instances)',
+		'       --placement worker|in-proc  one hot instance = one thread (conf instances.placement, default worker)',
+		'       --no-instances     disable the instance tools',
 		'  mindsmith rooms list | import <f.sgc> | export <name> <dir> | freeze <name>   [--room <dir>]',
 		'',
 		'Persistent config: ~/.mindsmith/config.json (or --config <file> / $MINDSMITH_CONFIG) — model',
@@ -179,14 +190,46 @@ if ( cmd === 'rooms' ) {
 		const wiring = { proxy: app.proxy, critiqueAsk: sm ? sm.graphAsk : app.escalationAsk };   // single-model: critique/lanes run no-think on the shared load
 		const mf = first.loaded.methods[0];
 		if ( mf ) { try { Object.assign(wiring, stockWiring(JSON.parse(require('fs').readFileSync(require('path').join(app.sgcDir, mf), 'utf8')))); } catch ( e ) { console.error('room stock lanes unavailable: ' + e.message); } }
+		let tools = defaultTools(wiring);
+		// the INSTANCE SERVICE (R4): named persistent graph instances as typed tools GENERATED from
+		// the registered descriptors, riding the residency runtime (managed persistence, worker
+		// placement by default — one hot instance = one thread, the mcp process never saturates).
+		let runtime = null;
+		if ( !hasFlag('no-instances') ) {
+			const { createRuntime } = require('../lib/instances/runtime.js');
+			const { instanceTools } = require('../lib/instances/mcp-tools.js');
+			const instDir = flag('instances') || msConfig.untilde(msConfig.get('instances.dir')) || msConfig.untilde('~/.mindsmith/instances');
+			const placement = flag('placement') || msConfig.get('instances.placement') || 'worker';
+			runtime = createRuntime({
+				dir: instDir, placement: placement === 'worker' ? 'worker' : undefined,
+				idleTTL: msConfig.get('timeouts.idleTTLMs'),
+				descriptors: {
+					notepad: require.resolve('skynet-graph/plugins/notepad/descriptor.js'),
+					dialectic: require.resolve('skynet-graph/plugins/critical-mind/descriptor.js')
+				}
+			});
+			// in-proc dialectic rides the SAME ask as `critique`; a worker resolves LLM_BASE itself
+			// (env is inherited — the ask is CONFIG, never serialized context).
+			require('skynet-graph/plugins/critical-mind/descriptor.js').wireAsk(wiring.critiqueAsk);
+			tools = tools.concat(instanceTools({ runtime }));
+		}
 		const server = createMcpServer({
-			tools: defaultTools(wiring),
+			tools,
 			serverInfo: { name: 'mindsmith', version: require('../package.json').version }
 		});
 		startMcpStdio({ server });
+		// a clean stop DRAINS the residency (persist-if-dirty before unload); a hard kill is just
+		// COLD — the packs hold the last persisted state (create/sync/evict/close, by design).
+		const shutdown = () => {
+			(runtime ? runtime.close() : Promise.resolve()).then(() => process.exit(0), () => process.exit(1));
+		};
+		process.on('SIGINT', shutdown);
+		process.on('SIGTERM', shutdown);
+		process.stdin.on('end', shutdown);                                     // the host closed the pipe
 		const l = first.loaded;
 		console.error('mindsmith mcp ready — tools: ' + server.tools.map(( t ) => t.name).join(', ')
-			+ '  · room: methods=' + l.methods.length + ' lattice=' + l.lattice.length);
+			+ '  · room: methods=' + l.methods.length + ' lattice=' + l.lattice.length
+			+ (runtime ? '  · instances: ' + Object.keys(runtime.descriptors()).sort().join('/') : ''));
 	}).catch(( e ) => { console.error(e.message); process.exit(1); });
 } else {
 	console.error('usage: mindsmith serve|mcp|rooms …');
