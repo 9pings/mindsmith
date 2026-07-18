@@ -162,7 +162,8 @@ failure).
 ```json
 { "models":   { "local": { "model": "~/models/q2.gguf" }, "frontier": { "base": "http://…/v1" } },
   "defaults": { "model": "local", "escalation": "frontier" },
-  "instances": { "dir": "~/.mindsmith/instances", "placement": "worker" },
+  "instances": { "dir": "~/.mindsmith/instances", "placement": "worker",
+                 "maxRevisions": 2500, "revisionsTail": 200 },
   "rooms":    { "dir": "~/.mindsmith/rooms" } }
 ```
 

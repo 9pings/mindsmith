@@ -151,6 +151,9 @@ function buildInstancesRuntime( o ) {
 	return createRuntime({
 		dir, placement: placement === 'worker' ? 'worker' : undefined,
 		idleTTL: msConfig.get('timeouts.idleTTLMs'),
+		// R7 knobs — conf-tunable: the hot-graph revision window and the persisted audit tail
+		maxRevisions: msConfig.get('instances.maxRevisions'),
+		revisionsTail: msConfig.get('instances.revisionsTail'),
 		descriptors: {
 			notepad: require.resolve('skynet-graph/plugins/notepad/descriptor.js'),
 			dialectic: require.resolve('skynet-graph/plugins/critical-mind/descriptor.js'),
