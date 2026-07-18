@@ -58,7 +58,7 @@ test('idle eviction + transparent rehydration: unload after TTL, remount on the 
 	assert.equal(rt.stats().hot, 1);
 
 	rt._tick(61000);                                                     // idle past the TTL
-	rt.sweep();
+	await rt.sweep();
 	assert.equal(rt.stats().hot, 0, 'idle instance UNLOADED (drained: dirty state persisted first)');
 	assert.equal(rt.stats().evictions, 1);
 
@@ -69,7 +69,7 @@ test('idle eviction + transparent rehydration: unload after TTL, remount on the 
 	await rt.close();
 });
 
-test('an in-flight act pins the instance: the sweeper never evicts under a working agent', async () => {
+test('residency is lastAccess+TTL (owner: no refcounts — self-healing): a fresh access survives a sweep, idleness never pins', async () => {
 	// a SLOW async write action (the descriptor contract allows async apply) — the agent is "working"
 	const slow = {
 		...notepad,
@@ -80,18 +80,20 @@ test('an in-flight act pins the instance: the sweeper never evicts under a worki
 	};
 	const rt = mk(tmp(), { descriptors: { notepad: slow } });
 	const { id } = await rt.create('notepad', { seed: {}, agent: 'A' });
-	const p = rt.act(id, 'slowNote', {}, { agent: 'A' });                // launch…
-	await new Promise(( r ) => setTimeout(r, 10));                       // …let it get in flight (refcount held)
-	rt._tick(120000);                                                    // way past the TTL
-	rt.sweep();
-	assert.equal(rt.stats().hot, 1, 'pinned by the in-flight act — never evicted under an agent');
+	// an in-flight act refreshed lastAccess at its START — a sweep during the flight sees a fresh
+	// instance (the residency contract: idleTTL >> the longest act; a HUNG act stops refreshing and
+	// the TTL self-heals where a leaked refcount would pin forever)
+	const p = rt.act(id, 'slowNote', {}, { agent: 'A' });
+	await new Promise(( r ) => setTimeout(r, 10));
+	await rt.sweep();                                                    // lastAccess is fresh → survives
+	assert.equal(rt.stats().hot, 1, 'freshly-accessed instance survives the sweep');
 	assert.equal(rt.stats().evictions, 0);
 	await p;
 	const r = await rt.act(id, 'recall', {}, { agent: 'A' });
 	assert.equal(r.notes.length, 1, 'the write landed');
-	rt._tick(120000);
-	rt.sweep();
-	assert.equal(rt.stats().hot, 0, 'once the agent is done, the same TTL evicts normally');
+	rt._tick(120000);                                                    // now genuinely idle past TTL
+	await rt.sweep();
+	assert.equal(rt.stats().hot, 0, 'idle past the TTL evicts — nothing can pin forever');
 	await rt.close();
 });
 
