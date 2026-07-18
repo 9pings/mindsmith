@@ -51,7 +51,7 @@ test('GO: create → note[A] → note[B] → recall(by) → fork → note → me
 	const { store, id, childId } = await goScenario(dir);
 	assert.ok(fs.existsSync(path.join(dir, id + '.sgp')), 'the instance persists as a .sgp pack');
 	const zip = fs.readFileSync(path.join(dir, id + '.sgp'));
-	assert.deepEqual(listEntries(zip).slice(0, 2), ['manifest.json', 'graph.json'], 'metas SEPARATE from the graph in the pack');
+	assert.deepEqual(listEntries(zip).slice(0, 2), ['manifest.json', 'graphs/master.json'], 'metas SEPARATE from the graph members in the pack');
 	const man = JSON.parse(readEntry(zip, 'manifest.json'));
 	assert.equal(man.type, 'notepad');
 	assert.equal(man.typeVersion, '1.0.0');
@@ -83,14 +83,14 @@ test('NEGATIVE version gate: an incompatible typeVersion is refused BEFORE any g
 	const man = JSON.parse(readEntry(zip, 'manifest.json'));
 	fs.writeFileSync(f, packEntries([
 		{ name: 'manifest.json', data: JSON.stringify({ ...man, typeVersion: '999.0.0' }) },
-		{ name: 'graph.json', data: readEntry(zip, 'graph.json') }
+		{ name: 'graphs/master.json', data: readEntry(zip, 'graphs/master.json') }
 	]));
 	const store = mk(dir);
 	await assert.rejects(() => store.act('notepad-1', 'recall', {}, { agent: 'a' }), /typeVersion 999\.0\.0.*1\.0\.0/s);
 	// unknown type: same pack relabeled
 	fs.writeFileSync(f, packEntries([
 		{ name: 'manifest.json', data: JSON.stringify({ ...man, type: 'ghost' }) },
-		{ name: 'graph.json', data: readEntry(zip, 'graph.json') }
+		{ name: 'graphs/master.json', data: readEntry(zip, 'graphs/master.json') }
 	]));
 	await assert.rejects(() => mk(dir).open('notepad-1'), /unknown type "ghost".*notepad/s, 'the refusal NAMES the known types');
 });
@@ -100,7 +100,7 @@ test('NEGATIVE corruption: a stomped graph entry fails CLOSED on open — but se
 	(await goScenario(dir)).store.close();
 	const f = path.join(dir, 'notepad-1.sgp');
 	const zip = fs.readFileSync(f);
-	const at = zip.indexOf(Buffer.from('graph.json')) + 'graph.json'.length;
+	const at = zip.indexOf(Buffer.from('graphs/master.json')) + 'graphs/master.json'.length;
 	for ( let i = 12; i < 40; i++ ) zip[at + i] ^= 0xff;
 	fs.writeFileSync(f, zip);
 	const store = mk(dir);
@@ -134,4 +134,50 @@ test('DETERMINISM: two fresh runs of the GO scenario yield byte-identical .sgp p
 	(await goScenario(d2)).store.close();
 	for ( const f of ['notepad-1.sgp', 'notepad-2.sgp'] )
 		assert.deepEqual(fs.readFileSync(path.join(d1, f)), fs.readFileSync(path.join(d2, f)), f + ' is byte-identical across runs');
+});
+
+// ── multi-graph packs (owner 07-18: 1 pack = 1 uri, an instance can hold LINKED graphs;
+//    the uri grows a suffix to target a member: mindsmith://<type>/<id>/<graph>) ──────────────
+
+test('MULTI-GRAPH: addGraph adds a named member; acts route per member; members are isolated inside the pack', async () => {
+	const dir = tmp();
+	const store = mk(dir);
+	const { id, uri } = await store.create('notepad', { seed: { title: 'multi' }, agent: 'agentA' });
+	assert.equal(uri, 'mindsmith://notepad/' + id);
+	await store.addGraph(id, 'dataSource1', { seed: { title: 'refs' }, agent: 'agentA' });
+	await store.act(id, 'note', { text: 'on master' }, { agent: 'agentA' });                       // default member
+	await store.act(id, 'note', { text: 'on the source' }, { agent: 'agentB', graph: 'dataSource1' });
+	const master = await store.act(id, 'recall', {}, { agent: 'agentA' });
+	const src = await store.act(id, 'recall', {}, { agent: 'agentA', graph: 'dataSource1' });
+	assert.deepEqual(master.notes.map(( n ) => n.text), ['on master'], 'master only sees its own notes');
+	assert.deepEqual(src.notes.map(( n ) => [n.text, n.by][0]), ['on the source'], 'the member only sees its own');
+	assert.deepEqual(store.members(id), ['master', 'dataSource1']);
+
+	const zip = fs.readFileSync(path.join(dir, id + '.sgp'));
+	assert.deepEqual(listEntries(zip), ['manifest.json', 'graphs/master.json', 'graphs/dataSource1.json'],
+		'ONE pack carries all linked member graphs');
+	const man = JSON.parse(readEntry(zip, 'manifest.json'));
+	assert.deepEqual(Object.keys(man.graphs), ['master', 'dataSource1'], 'the manifest indexes its members');
+
+	// round-trip: a fresh store reopens BOTH members intact
+	store.close();
+	const store2 = mk(dir);
+	const src2 = await store2.act(id, 'recall', {}, { agent: 'x', graph: 'dataSource1' });
+	assert.deepEqual(src2.notes.map(( n ) => n.text), ['on the source']);
+	store2.close();
+});
+
+test('MULTI-GRAPH negatives: unknown member is a typed error naming the members; addGraph refuses collisions', async () => {
+	const store = mk(tmp());
+	const { id } = await store.create('notepad', { seed: {}, agent: 'a' });
+	await assert.rejects(() => store.act(id, 'recall', {}, { agent: 'a', graph: 'ghost' }), /no graph "ghost".*master/s);
+	await assert.rejects(() => store.addGraph(id, 'master', { agent: 'a' }), /already has .*master/);
+	store.close();
+});
+
+test('parseUri: mindsmith://<type>/<id>[/<graph>] round-trips; default member is master', () => {
+	const { parseUri } = require('../lib/instances/store.js');
+	assert.deepEqual(parseUri('mindsmith://notepad/notepad-1'), { type: 'notepad', id: 'notepad-1', graph: 'master' });
+	assert.deepEqual(parseUri('mindsmith://notepad/notepad-1/dataSource1'), { type: 'notepad', id: 'notepad-1', graph: 'dataSource1' });
+	assert.throws(() => parseUri('http://nope/x'), /not a mindsmith uri/);
 });
