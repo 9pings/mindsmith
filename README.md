@@ -163,7 +163,7 @@ failure).
 { "models":   { "local": { "model": "~/models/q2.gguf" }, "frontier": { "base": "http://…/v1" } },
   "defaults": { "model": "local", "escalation": "frontier" },
   "instances": { "dir": "~/.mindsmith/instances", "placement": "worker",
-                 "maxRevisions": 2500, "revisionsTail": 200 },
+                 "maxRevisions": 2500, "revisionsTail": 2500 },
   "rooms":    { "dir": "~/.mindsmith/rooms" } }
 ```
 
