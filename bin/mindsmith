@@ -209,16 +209,22 @@ if ( cmd === 'rooms' ) {
 } else if ( cmd === 'mcp' ) {
 	// the MCP stdio surface over the SAME verified stock + escalation as serve — no http socket.
 	// stdout is the PROTOCOL channel: everything human goes to stderr.
-	const app = buildApp(resolveEscalation('mcp'), { onAnswer: ( row ) => console.error('[' + (row.source === 'local' ? 'cache' : 'frontier') + '] ' + row.query) });
+	// R6: a shared service logger — trace_tail serves its ring buffer (answer/tier provenance).
+	const logger = require('skynet-graph').createLogger({ label: 'mindsmith', level: process.env.SG_LOG_LEVEL || 'log', console: false });
+	const app = buildApp(resolveEscalation('mcp'), {
+		onAnswer: ( row ) => { console.error('[' + (row.source === 'local' ? 'cache' : 'frontier') + '] ' + row.query); logger.log('answer [' + row.source + '] ' + row.query); },
+		onRoute: ( r ) => logger.info('route [tier:' + r.tier + '] ' + r.query)
+	});
 	app.sync().then(( first ) => {
-		const { createMcpServer, defaultTools, startMcpStdio, stockWiring } = require('skynet-graph/lib/sg/mcp.js');
+		const { createMcpServer, defaultTools, startMcpStdio } = require('skynet-graph/lib/sg/mcp.js');
 		// the FULL tool surface over the room: proxy (ask/drift/metrics/lattice_load) + the ASSISTANT
-		// lanes over the room's methods stock (hint = certified menu · propose = gated admission) +
-		// the C9 critical mind on the escalation backend (critique).
+		// lanes over the WHOLE room's methods stock (R6: every bundle contributes — hint = certified
+		// menu · propose = gated admission) + the C9 critical mind on the escalation backend
+		// (critique) + trace_tail on the shared logger.
 		const sm = singleModel();
-		const wiring = { proxy: app.proxy, critiqueAsk: sm ? sm.graphAsk : app.escalationAsk };   // single-model: critique/lanes run no-think on the shared load
-		const mf = first.loaded.methods[0];
-		if ( mf ) { try { Object.assign(wiring, stockWiring(JSON.parse(require('fs').readFileSync(require('path').join(app.sgcDir, mf), 'utf8')))); } catch ( e ) { console.error('room stock lanes unavailable: ' + e.message); } }
+		const wiring = { proxy: app.proxy, critiqueAsk: sm ? sm.graphAsk : app.escalationAsk, logger };   // single-model: critique/lanes run no-think on the shared load
+		const lanes = app.stockLanes();
+		if ( lanes ) Object.assign(wiring, lanes);
 		let tools = defaultTools(wiring);
 		// the INSTANCE SERVICE (R4): named persistent graph instances as typed tools GENERATED from
 		// the registered descriptors, riding the residency runtime (managed persistence, worker
