@@ -6,8 +6,8 @@
   "repository": { "type": "git", "url": "git+https://github.com/9pings/mindsmith.git" },
   "homepage": "https://github.com/9pings/mindsmith#readme",
   "bugs": "https://github.com/9pings/mindsmith/issues",
-  "description": "An external reasoning layer for your local LLM — an OpenAI-compatible proxy + MCP tools (an auditable critical mind, gated think-mode lanes) backed by a mixture of certified graph-experts in your own verified .sgc rooms. Repairs low-quant judgment; nothing leaves the machine (no-egress proven on real sockets).",
-  "keywords": ["llm", "local-llm", "reasoning", "critical-thinking", "mixture-of-experts", "knowledge-graph", "openai-compatible", "proxy", "mcp", "agent", "offline", "gguf", "agpl", "skynet-graph"],
+  "description": "An external reasoning layer for your local LLM — named persistent graph workspaces (debate/plan/notepad instances, every write attributed), an OpenAI-compatible proxy over your verified .sgc rooms, and MCP tools: an auditable critical mind, gated think-mode lanes, piece-by-piece zoom. Nothing leaves the machine (no-egress proven on real sockets).",
+  "keywords": ["llm", "local-llm", "reasoning", "agent-memory", "workspace", "critical-thinking", "knowledge-graph", "openai-compatible", "proxy", "mcp", "agent", "offline", "gguf", "agpl", "skynet-graph"],
   "main": "./lib/app.js",
   "bin": {
     "mindsmith": "bin/mindsmith"

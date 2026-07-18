@@ -36,8 +36,10 @@
     <p class="sub">The ready-made appliance over the
       <a href="https://github.com/9pings/skynet-graph">skynet-graph</a> engine: an
       <strong>OpenAI-compatible local endpoint</strong> where covered queries are served from
-      <strong>your verified <code>.sgc</code> stock at zero frontier calls</strong> — plus gated
-      assistant lanes and an external critical mind, over shareable rooms.
+      <strong>your verified <code>.sgc</code> stock at zero frontier calls</strong> — plus
+      <strong>named persistent graph workspaces</strong> your agents grow across sessions (a living
+      debate, a roadmap that reopens, a shared notepad — every write attributed), an external
+      critical mind, gated assistant lanes, and piece-by-piece serving of big tasks.
       <strong>Nothing leaves your machine by default.</strong></p>
     <p class="sub">Measured on the same model at two quant levels: SQL covered queries low-quant
       <strong>8→63&nbsp;%</strong> (high-quant reference 46→92&nbsp;%, N=201) · finance-table traffic
@@ -54,8 +56,8 @@
       run from source — the test suite is GPU-free. Once published, the same commands work via
       <code>npm i -g mindsmith</code> or <code>npx mindsmith</code>.</p>
 <pre><code># until the npm release:
-git clone https://github.com/9pings/skynet-dequantizer && cd skynet-dequantizer
-npm install && npm test                     # 26/26, GPU-free
+git clone https://github.com/9pings/mindsmith && cd mindsmith
+npm install && npm test                     # GPU-free suite
 
 # 1 — serve (embedded gguf as the escalation):
 FRONTIER_MODEL=/path/model.gguf mindsmith serve --room ./sgc
@@ -67,8 +69,9 @@ FRONTIER_MODEL=/path/model.gguf mindsmith serve --room ./sgc
 # 3 — your stock rooms (local .sgc mini-repos, gate-checked):
 mindsmith rooms list|import|export|freeze
 
-# 4 — or as MCP tools for an agent host (Claude Code, any MCP client):
-claude mcp add skynet -- mindsmith mcp --routing routing.json</code></pre>
+# 4 — or as MCP tools for an agent host (Claude Code, any MCP client) — the
+#     instance service (dialectic · plan · notepad workspaces) is on by default:
+claude mcp add mindsmith -- mindsmith mcp</code></pre>
     <p class="lead">AI agent reading this? The repo's <code>README.md</code> is written to be
       machine-readable, and the whole tool surface is one command away over MCP
       (<code>mindsmith mcp</code>) — typed refusals included.</p>
@@ -170,7 +173,7 @@ claude mcp add skynet -- mindsmith mcp --routing routing.json</code></pre>
         <span>mindsmith mcp</span>
         <span class="cap">illustrative transcript</span>
       </div>
-      <pre data-type><span class="ln c-cmd">$ claude mcp add skynet -- mindsmith mcp --routing routing.json</span><span class="ln c-out">mindsmith mcp ready — tools: ask, drift, metrics, lattice_load, hint, propose, critique</span><span class="ln"> </span><span class="ln c-dim"># the host calls the critique tool on a decision:</span><span class="ln c-cmd">&gt; critique { "topic": "Adopt engine X for the reporting pipeline?" }</span><span class="ln c-out">{</span><span class="ln c-hdr">  "frameStatus": "FREE",</span><span class="ln c-hdr">  "verdict": "UNDECIDED",</span><span class="ln c-out">  "counts": { "PRO": 3, "CON": 2 },  "margin": 1,  "threshold": 3,</span><span class="ln c-out">  "ledger": [</span><span class="ln c-out">    { "side": "PRO", "kind": "declared",  "status": "active", "witnesses": ["s1","s4"], "text": "…" },</span><span class="ln c-out">    { "side": "CON", "kind": "generated", "status": "active", "witnesses": ["s2"],      "text": "…" },</span><span class="ln c-open">    { "side": "CON", "kind": "declared",  "status": "open",   "witnesses": null,        "text": "migration cost is unquantified" }</span><span class="ln c-out">  ],</span><span class="ln c-ok">  "advice": "This is a typed data request, not a dead end: gather statements that</span><span class="ln c-ok">             genuinely bear on the OPEN points [migration cost is unquantified], then</span><span class="ln c-ok">             call critique again with statements=[...] — the frame becomes MATERIAL</span><span class="ln c-ok">             and the margin can move honestly."</span><span class="ln c-out">}</span></pre>
+      <pre data-type><span class="ln c-cmd">$ claude mcp add skynet -- mindsmith mcp --routing routing.json</span><span class="ln c-out">mindsmith mcp ready — tools: ask, drift, metrics, lattice_load, critique, self_consistency,</span><span class="ln c-out">  zoom, trace_tail, hint, propose · instances: dialectic_* plan_* notepad_* + instances_*</span><span class="ln"> </span><span class="ln c-dim"># the host calls the critique tool on a decision:</span><span class="ln c-cmd">&gt; critique { "topic": "Adopt engine X for the reporting pipeline?" }</span><span class="ln c-out">{</span><span class="ln c-hdr">  "frameStatus": "FREE",</span><span class="ln c-hdr">  "verdict": "UNDECIDED",</span><span class="ln c-out">  "counts": { "PRO": 3, "CON": 2 },  "margin": 1,  "threshold": 3,</span><span class="ln c-out">  "ledger": [</span><span class="ln c-out">    { "side": "PRO", "kind": "declared",  "status": "active", "witnesses": ["s1","s4"], "text": "…" },</span><span class="ln c-out">    { "side": "CON", "kind": "generated", "status": "active", "witnesses": ["s2"],      "text": "…" },</span><span class="ln c-open">    { "side": "CON", "kind": "declared",  "status": "open",   "witnesses": null,        "text": "migration cost is unquantified" }</span><span class="ln c-out">  ],</span><span class="ln c-ok">  "advice": "This is a typed data request, not a dead end: gather statements that</span><span class="ln c-ok">             genuinely bear on the OPEN points [migration cost is unquantified], then</span><span class="ln c-ok">             call critique again with statements=[...] — the frame becomes MATERIAL</span><span class="ln c-ok">             and the margin can move honestly."</span><span class="ln c-out">}</span></pre>
       <p class="term-note">illustrative transcript — payload fields, statuses and the advice
         contract match the real tool; the topic and ledger texts are examples.</p>
     </div>
@@ -179,12 +182,24 @@ claude mcp add skynet -- mindsmith mcp --routing routing.json</code></pre>
   <!-- ── feature cards ──────────────────────────────────────────────── -->
   <section aria-labelledby="h-features">
     <p class="kicker">What ships, at which maturity</p>
-    <h2 id="h-features">Four features, one honest scale</h2>
+    <h2 id="h-features">What ships, one honest scale</h2>
     <p class="lead">Every bar uses the same 6-rung scale — 1 idea · 2 pre-registered kill-gates ·
       3 mechanics proven · 4 measured at scale · 5 product-integrated · 6 field-adopted.
       <strong>Nothing is at 6.</strong> <a href="honesty.html#scale">Scale definitions →</a></p>
 
     <div class="cards">
+      <div class="card">
+        <span class="fid">NEW</span>
+        <h3>Named graph instances</h3>
+        <p>Persistent typed workspaces your agents grow across sessions — a <code>dialectic</code>
+          debate, a <code>plan</code> that reopens with a reason, a shared <code>notepad</code>.
+          Every write <strong>attributed</strong>; one auditable <code>.sgp</code> pack per
+          instance; one hot instance = one worker thread; share it over HTTP as the same
+          byte-identical artifact.</p>
+        <span class="mbar"><span class="on" aria-hidden="true">███</span><span class="off" aria-hidden="true">░░░</span><span class="rung">3/6</span><span class="lbl">mechanics proven · product-wired</span></span>
+        <a class="more" href="features.html#instances">what holds &amp; limits →</a>
+      </div>
+
       <div class="card">
         <span class="fid">F1</span>
         <h3>Low-quant repair</h3>
@@ -230,11 +245,13 @@ claude mcp add skynet -- mindsmith mcp --routing routing.json</code></pre>
     </div>
 
     <div class="gap">
-      <span class="tag tag-gap">known gap</span>
-      <strong>F2 piece-by-piece zoom is not surfaced here.</strong> The decomposition of big tasks is
-      measured in the engine library (math word problems ×3.25 [2.4–4.8], financial-table QA ×2.54
-      [1.96–3.5], 560 tasks) but no MCP tool exposes it yet — rung 4/6, library-only today.
-      We list gaps because you would find them anyway. <a href="features.html#f2-gap">details →</a>
+      <span class="tag">gap closed</span>
+      <strong>F2 piece-by-piece zoom is now surfaced — the <code>zoom</code> tool.</strong> The
+      decomposition of big tasks is measured (math word problems ×3.25 [2.4–4.8], financial-table
+      QA ×2.54 [1.96–3.5], 560 tasks — rung 4/6): you declare the typed plan, each leaf is served
+      in a bounded context, and a plan whose needs nobody produces is refused before any model
+      call. This page used to list it as the known gap — we close them in the open too.
+      <a href="features.html#f2-gap">details →</a>
     </div>
   </section>
 
@@ -244,7 +261,9 @@ claude mcp add skynet -- mindsmith mcp --routing routing.json</code></pre>
     <h2 id="h-honesty">Refuted claims stay on the page</h2>
     <p class="lead">Every number above comes from a campaign with N, negative controls and
       deterministic re-runs. When a claim falls, it is removed from the product the day it falls —
-      and listed. Three examples: the runtime cross-agreement tier
+      and listed. Four examples: the C9 head-to-head benchmark
+      (<span class="tag tag-refuted">retired</span> — confounded arms; the reframe ships instead),
+      the runtime cross-agreement tier
       (<span class="tag tag-refuted">refuted</span>), graded weighting under the precision cap
       (<span class="tag tag-refuted">refuted</span>), low-quant self-audit
       (<span class="tag tag-refuted">refuted</span>, 3 forms).</p>
