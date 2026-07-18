@@ -175,6 +175,27 @@ test('MULTI-GRAPH negatives: unknown member is a typed error naming the members;
 	store.close();
 });
 
+test('FINDABILITY: an LLM retrieves instances by text/theme — tags + description in the manifest, matched manifest-only', async () => {
+	const store = mk(tmp());
+	await store.create('notepad', { seed: {}, meta: { title: 'Pizza debate', description: 'arguments about pineapple on pizza', tags: ['debate', 'food'] }, agent: 'A' });
+	await store.create('notepad', { seed: {}, meta: { title: 'Deploy runbook', description: 'steps for the friday deploy', tags: ['ops'] }, agent: 'A' });
+
+	assert.equal(store.search({ q: 'pineapple' }).length, 1, 'free-text hits the description');
+	assert.equal(store.search({ q: 'PIZZA' })[0].title, 'Pizza debate', 'case-insensitive');
+	assert.equal(store.search({ tags: ['ops'] })[0].title, 'Deploy runbook', 'tag filter');
+	assert.equal(store.search({ q: 'nothing-matches' }).length, 0);
+	const row = store.search({ q: 'debate' })[0];
+	assert.deepEqual({ d: row.description, t: row.tags }, { d: 'arguments about pineapple on pizza', t: ['debate', 'food'] },
+		'rows carry description+tags so the LLM can rank');
+
+	// setMeta edits findability, attributed; the change is immediately searchable
+	await assert.rejects(() => store.setMeta('notepad-1', { tags: ['x'] }, {}), /requires ctx.agent/);
+	await store.setMeta('notepad-1', { tags: ['debate', 'food', 'italy'], description: 'now with a verdict' }, { agent: 'B' });
+	assert.equal(store.search({ q: 'verdict' }).length, 1, 'edited description is searchable');
+	assert.equal(store.search({ tags: ['italy'] }).length, 1, 'added tag is searchable');
+	store.close();
+});
+
 test('parseUri: mindsmith://<type>/<id>[/<graph>] round-trips; default member is master', () => {
 	const { parseUri } = require('../lib/instances/store.js');
 	assert.deepEqual(parseUri('mindsmith://notepad/notepad-1'), { type: 'notepad', id: 'notepad-1', graph: 'master' });
