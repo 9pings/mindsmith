@@ -154,8 +154,9 @@ test('MULTI-GRAPH: addGraph adds a named member; acts route per member; members 
 	assert.deepEqual(store.members(id), ['master', 'dataSource1']);
 
 	const zip = fs.readFileSync(path.join(dir, id + '.sgp'));
-	assert.deepEqual(listEntries(zip), ['manifest.json', 'graphs/master.json', 'graphs/dataSource1.json'],
-		'ONE pack carries all linked member graphs');
+	assert.deepEqual(listEntries(zip),
+		['manifest.json', 'graphs/master.json', 'graphs/dataSource1.json', 'revs/master.json', 'revs/dataSource1.json'],
+		'ONE pack carries all linked member graphs + their audit views (R7)');
 	const man = JSON.parse(readEntry(zip, 'manifest.json'));
 	assert.deepEqual(Object.keys(man.graphs), ['master', 'dataSource1'], 'the manifest indexes its members');
 
