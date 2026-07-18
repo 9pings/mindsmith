@@ -205,7 +205,8 @@ if ( cmd === 'rooms' ) {
 				idleTTL: msConfig.get('timeouts.idleTTLMs'),
 				descriptors: {
 					notepad: require.resolve('skynet-graph/plugins/notepad/descriptor.js'),
-					dialectic: require.resolve('skynet-graph/plugins/critical-mind/descriptor.js')
+					dialectic: require.resolve('skynet-graph/plugins/critical-mind/descriptor.js'),
+					plan: require.resolve('skynet-graph/plugins/planner/descriptor.js')
 				}
 			});
 			// in-proc dialectic rides the SAME ask as `critique`; a worker resolves LLM_BASE itself

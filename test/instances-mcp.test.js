@@ -27,6 +27,7 @@ const { createMcpServer } = require('skynet-graph/lib/sg/mcp.js');
 
 const NOTEPAD_PATH = require.resolve('skynet-graph/plugins/notepad/descriptor.js');
 const DIALECTIC_PATH = require.resolve('skynet-graph/plugins/critical-mind/descriptor.js');
+const PLAN_PATH = require.resolve('skynet-graph/plugins/planner/descriptor.js');
 
 const tmp = () => fs.mkdtempSync(path.join(os.tmpdir(), 'sgp-mcp-'));
 const CLOCK = () => 1750000000000;
@@ -42,14 +43,19 @@ async function call( server, id, tool, args ) {
 }
 
 test('GO generation: one typed tool per action + the socle; schemas derive from `input`; agent required on writes only', () => {
-	const rt = mkRuntime({ descriptors: { notepad: NOTEPAD_PATH, dialectic: DIALECTIC_PATH } });
+	const rt = mkRuntime({ descriptors: { notepad: NOTEPAD_PATH, dialectic: DIALECTIC_PATH, plan: PLAN_PATH } });
 	const tools = instanceTools({ runtime: rt });
 	const names = tools.map(( t ) => t.name );
 
 	for ( const n of ['notepad_note', 'notepad_recall',
 		'dialectic_addArguments', 'dialectic_addViewpoint', 'dialectic_verdict', 'dialectic_state', 'dialectic_brief',
+		'plan_addSteps', 'plan_complete', 'plan_reopen', 'plan_update', 'plan_snapshot', 'plan_sync',
 		'instances_create', 'instances_search', 'instances_fork', 'instances_delete', 'instances_revisions', 'instances_sync'] )
 		assert.ok(names.includes(n), n + ' is exposed');
+
+	const psync = tools.find(( t ) => t.name === 'plan_sync' );
+	assert.deepEqual(psync.inputSchema.required, ['id'], 'sync is a READ: no agent, mirror optional');
+	assert.equal(psync.inputSchema.properties.mirror.type, 'object', "'object?' input spec derives an optional object");
 
 	const note = tools.find(( t ) => t.name === 'notepad_note' );
 	assert.deepEqual(note.inputSchema.required.sort(), ['agent', 'id', 'text'], 'write: id + agent + the action input are required');
