@@ -121,10 +121,19 @@ function singleModel() {
 	return (_sm = { answerAsk, graphAsk, path, think, base });
 }
 
+// the default COMPLETION budget (owner 07-21): conf `defaults.maxTokens`, built-in 2048 = the llm-local
+// per-call default (1024) DOUBLED — contents can justify more. Injected ONLY when the caller passes no
+// maxTokens (per-call stays king); the per-path tool budgets ride the same knob via wiring.maxTokens.
+function defaultMaxTokens() { return Number(msConfig.get('defaults.maxTokens')) || 2048; }
+function withBudget( ask ) {
+	if ( typeof ask !== 'function' ) return ask;
+	const budget = defaultMaxTokens();
+	return ( p ) => ask(Object.assign({}, p, { maxTokens: p && p.maxTokens != null ? p.maxTokens : budget }));
+}
 // escalation resolution shared by serve + mcp: single-model, an N-tier routing config, or a single frontier backend.
 function resolveEscalation( need ) {
 	const sm = singleModel();
-	if ( sm ) return { frontierChat: sm.answerAsk };
+	if ( sm ) return { frontierChat: withBudget(sm.answerAsk) };
 	const routing = resolveRouting(argv, process.env);
 	if ( routing ) return { tiers: routing.tiers, policy: routing.policy };
 	let frontierChat;
@@ -134,7 +143,7 @@ function resolveEscalation( need ) {
 	else if ( cfgEsc && cfgEsc.kind === 'gguf' ) frontierChat = require('skynet-graph/lib/providers/llm-local.js').makeLocalAsk({ modelPath: cfgEsc.modelPath, reasoningBudget: 0 });
 	else if ( cfgEsc && cfgEsc.kind === 'server' ) frontierChat = require('skynet-graph/lib/providers/llm.js').makeAsk({ base: cfgEsc.base, model: cfgEsc.model, key: cfgEsc.key });
 	else { console.error(need + ' needs an escalation: --routing <config.json>, env FRONTIER_MODEL=<path.gguf> | LLM_BASE=<url>, or a defaults.escalation alias in ~/.mindsmith/config.json'); process.exit(1); }
-	return { frontierChat };
+	return { frontierChat: withBudget(frontierChat) };
 }
 // The instance-service runtime (R4/R5). The instances DIR IS OWNED BY ONE PROCESS (catalogue and
 // id-minting are derived by scanning it): `mindsmith mcp` owns it BY DEFAULT (the agent surface
@@ -225,7 +234,10 @@ if ( cmd === 'rooms' ) {
 		// menu · propose = gated admission) + the C9 critical mind on the escalation backend
 		// (critique) + trace_tail on the shared logger.
 		const sm = singleModel();
-		const wiring = { proxy: app.proxy, critiqueAsk: sm ? sm.graphAsk : app.escalationAsk, logger };   // single-model: critique/lanes run no-think on the shared load
+		// conf `defaults.maxTokens` : UNSET → each mechanism keeps its doubled built-in (tools 600, ask 2048) ;
+		// SET → the one knob governs both (wiring.maxTokens = tool-path default too). Per-call stays king.
+		const wiring = { proxy: app.proxy, critiqueAsk: withBudget(sm ? sm.graphAsk : app.escalationAsk), logger,
+			maxTokens: Number(msConfig.get('defaults.maxTokens')) || undefined };   // single-model: critique/lanes run no-think on the shared load
 		const lanes = app.stockLanes();
 		if ( lanes ) Object.assign(wiring, lanes);
 		let tools = defaultTools(wiring);
