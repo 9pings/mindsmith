@@ -70,6 +70,10 @@ function checkBars( bars, trace, finalText ) {
 	const lastOf = ( tool ) => { const t = trace.filter(( x ) => x.tool === tool); return t.length ? t[t.length - 1] : null; };
 	(bars || []).forEach(( b, i ) => {
 		const label = 'bar#' + (i + 1) + (b.why ? ' (' + b.why + ')' : '');
+		// stubOnly: a bar that pins the SCRIPTED replies' exact counts (a stub-scenario fact, not a
+		// structural property) — asserted in stub, skipped live (the README discipline: live bars
+		// never assert model behavior beyond structure; finalText != null ⇔ live run).
+		if ( b.stubOnly && finalText != null ) return;
 		if ( b.never ) { if ( trace.some(( t ) => t.tool === b.never) ) failures.push(label + ': tool ' + b.never + ' was called'); return; }
 		if ( b.final ) {
 			if ( finalText == null ) return;                                  // live-only bar, ignored in stub

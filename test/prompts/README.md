@@ -57,3 +57,7 @@ The file starts with a JSON front-matter block, then the prose prompt:
   = regex that must NOT match; `{never}` = the tool must not have been called; `{final}` = regex
   over the live model's final message (live mode only; ignored in stub).
 - `modes` — `"stub"`-less files are SKIPPED by CI with a printed reason (no silent caps).
+- a bar may carry `"stubOnly": true` — it pins the SCRIPTED replies' exact counts (a stub-scenario
+  fact); asserted in stub, skipped live. Live bars stay structural (a field EXISTS, a refusal is
+  typed), never a bet on live model behavior — paid 07-21: `"abstained":1` encoded the stub script
+  and could never pass with a competent live model.

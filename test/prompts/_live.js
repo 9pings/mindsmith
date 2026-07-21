@@ -26,10 +26,17 @@ const args = process.argv.slice(2);
 const maxTurns = Number((args.find(( a, i ) => args[i - 1] === '--max-turns')) || 8);
 const files = args.filter(( a ) => a.endsWith('.md'));
 
-async function chat( messages ) {
+async function chat( messages, opts ) {
+	// forward the ask envelope's decode params — a tool that requests temperature 0.7 (sc path
+	// diversity) or a token budget DESIGNED those values; flattening them to the driver's defaults
+	// changes the tool's semantics (paid live 07-21: temp0-greedy fell into a no-ANSWER-line basin,
+	// which the C6 answer cache then pinned for every later run).
+	opts = opts || {};
+	const body = { model: MODEL, messages, temperature: opts.temperature != null ? opts.temperature : 0 };
+	if ( opts.maxTokens != null ) body.max_tokens = opts.maxTokens;
 	const res = await fetch(BASE.replace(/\/$/, '') + '/chat/completions', {
 		method: 'POST', headers: { 'content-type': 'application/json' },
-		body: JSON.stringify({ model: MODEL, messages, temperature: 0 })
+		body: JSON.stringify(body)
 	});
 	if ( !res.ok ) throw new Error('LLM_BASE ' + res.status + ': ' + (await res.text()).slice(0, 200));
 	const j = await res.json();
@@ -45,30 +52,52 @@ function lastDirective( text ) {
 			catch ( e ) { return { parseError: lines[i] }; }
 		}
 	}
-	return { finish: lines[lines.length - 1] || '' };                 // no directive = treat as final
+	return { none: true };                                            // no directive — the loop re-asks (never a silent fake FINISH)
 }
 
 async function runLive( parsed ) {
-	const ask = async ( p ) => chat([{ role: 'user', content: askText(p) }]);
+	const ask = async ( p ) => chat([{ role: 'user', content: askText(p) }], { temperature: p && p.temperature, maxTokens: p && p.maxTokens });
 	const server = buildServer({ critiqueAsk: ask });
 	const toolDocs = server.tools.map(( t ) => '- ' + t.name + ' ' + JSON.stringify(t.inputSchema && t.inputSchema.properties || {})).join('\n');
 	const messages = [{
 		role: 'user',
 		content: 'You can call these tools. To call one, end your message with exactly one line:\n' +
-			'TOOL: {"tool":"<name>","args":{...}}\n' +
+			'TOOL: {"tool":"<name>","args":{<the tool\'s input fields>}}\n' +
+			'Example: TOOL: {"tool":"some_tool","args":{"question":"what is 6*7?"}}\n' +
+			'Keep TOOL args COMPACT (required fields only — one short line; tools fill in the rest themselves).\n' +
+			'If a TOOL RESULT is an error or a refusal, FIX the call and try again — never FINISH with the error.\n' +
 			'When you have the answer, end with one line: FINISH: <your answer>\n\nTools:\n' + toolDocs +
 			'\n\nTask:\n' + parsed.prompt
 	}];
 	const trace = [];
-	let finalText = null, id = 0;
+	let finalText = null, id = 0, noneCount = 0;
 	for ( let turn = 0; turn < maxTurns && finalText == null; turn++ ) {
-		const reply = await chat(messages);
+		// generous EXPLICIT turn budget — a critique/plan TOOL line legitimately carries long args; an
+		// implicit backend default silently truncating the JSON mid-line is the no-silent-caps bug class
+		// (paid live 07-21: a perfect critique call was cut → "unparsable" → the model spiraled).
+		const reply = await chat(messages, { maxTokens: 1600 });
 		messages.push({ role: 'assistant', content: reply });
+		if ( process.env.LIVE_DEBUG ) console.error('   [turn] ' + JSON.stringify(reply).slice(0, 500));
 		const d = lastDirective(reply);
 		if ( d.finish !== undefined ) { finalText = d.finish; break; }
-		if ( d.parseError ) { messages.push({ role: 'user', content: 'Unparsable TOOL line. Emit valid JSON on the TOOL line.' }); continue; }
+		if ( d.none ) {
+			// the smoke tests the SURFACE, not the host model's prefix discipline (paid both ways live
+			// 07-21: a silent fake-FINISH on garbage, THEN a nudge loop that derailed a perfect answer).
+			// If work was already done (≥1 tool call) — or the model ignored one concrete nudge — the
+			// free-text reply IS its answer: accept it as final, provenance ANNOUNCED.
+			if ( trace.length || noneCount++ ) {
+				finalText = reply.trim();
+				console.error('   [fallback] no FINISH directive — free-text reply accepted as final (announced)');
+				break;
+			}
+			messages.push({ role: 'user', content: 'Reply now with one line: FINISH: <your answer>' });
+			continue;
+		}
+		// the feedback must NOT contain a TOOL-shaped string — a small host model PARROTS it into its
+		// next call (paid live 07-21: an example with braces spawned an 8-turn "search" loop).
+		if ( d.parseError ) { messages.push({ role: 'user', content: 'Your TOOL line was invalid JSON — it was probably cut mid-line. Call the tool again with SHORTER args: required fields only.' }); continue; }
 		const r = await callTool(server, ++id, d.tool.tool, d.tool.args);
-		trace.push({ tool: d.tool.tool, result: r });
+		trace.push({ tool: d.tool.tool, args: d.tool.args, result: r });   // args IN the trace (§3.6 : la trace montre l'appel — payé : « Question: undefined » invisible)
 		messages.push({ role: 'user', content: 'TOOL RESULT (' + d.tool.tool + '):\n' + JSON.stringify(r).slice(0, 4000) });
 	}
 	if ( finalText == null ) return { failures: ['no FINISH within ' + maxTurns + ' turns'], trace };
@@ -83,7 +112,7 @@ async function runLive( parsed ) {
 	for ( const parsed of targets ) {
 		console.error('── live: ' + parsed.name);
 		const r = await runLive(parsed);
-		(r.trace || []).forEach(( t ) => console.error('   call ' + t.tool + ' → ' + JSON.stringify(t.result).slice(0, 160)));
+		(r.trace || []).forEach(( t ) => console.error('   call ' + t.tool + ' ' + JSON.stringify(t.args) + ' → ' + JSON.stringify(t.result).slice(0, 160)));
 		if ( r.finalText != null ) console.error('   final: ' + String(r.finalText).slice(0, 200));
 		if ( r.failures.length ) { red++; r.failures.forEach(( f ) => console.error('   ✗ ' + f)); }
 		else console.error('   ✓ all bars pass');

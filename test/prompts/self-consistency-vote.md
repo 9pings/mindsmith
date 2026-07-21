@@ -16,8 +16,9 @@
   },
   "bars": [
     { "call": "self_consistency", "match": "\"verdict\":\"21\"", "why": "the majority class wins (21.0 snaps to 21)" },
-    { "call": "self_consistency", "match": "\"abstained\":1", "why": "a path with no parsable ANSWER line is NOT a vote class — counted, never silently lost" },
-    { "call": "self_consistency", "match": "\"agree\":3" },
+    { "call": "self_consistency", "match": "\"abstained\":1", "stubOnly": true, "why": "a path with no parsable ANSWER line is NOT a vote class — counted, never silently lost (exact count = the scripted scenario, stub-only)" },
+    { "call": "self_consistency", "match": "\"agree\":3", "stubOnly": true, "why": "exact agree count = the scripted scenario, stub-only" },
+    { "call": "self_consistency", "match": "\"abstained\":", "why": "live structural: the abstention COUNTER exists (nothing silently lost), whatever its value" },
     { "final": "21" }
   ]
 }
