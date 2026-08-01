@@ -35,7 +35,8 @@
     "bin",
     "lib",
     "README.md",
-    "LICENSE"
+    "LICENSE",
+    "llms.txt"
   ],
   "engines": {
     "node": ">=18"

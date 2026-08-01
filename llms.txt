@@ -1,0 +1,39 @@
+# mindsmith
+
+> An external reasoning layer for your LOCAL LLM, as an appliance: an OpenAI-compatible proxy,
+> an MCP tool surface (30 tools), and local `.sgc` rooms of verified knowledge. Local-first —
+> your prompts, rooms and instances never leave the machine. AGPL-3.0-or-later, Node 18+,
+> no build step. The engine is the `skynet-graph` npm package; mindsmith is how you RUN it.
+
+Key facts an agent should know before using this package:
+
+- Three surfaces, one bin: `mindsmith serve` (OpenAI endpoint at 127.0.0.1:4747/v1 — point any
+  SDK at it; every completion carries `x-sg-*` provenance headers: served-from, cost, coverage),
+  `mindsmith mcp` (the tool surface over stdio for MCP hosts), `mindsmith rooms` (import/export
+  verified `.sgc` stocks).
+- Escalation is fail-closed and DECLARED: `mcp`/`serve` refuse to start without one of
+  `--routing <config>` | env `FRONTIER_MODEL=<gguf>` | env `LLM_BASE=<url>` — the refusal names
+  the fix. On WSL export `LD_LIBRARY_PATH=/usr/lib/wsl/lib:/usr/lib/x86_64-linux-gnu` or a gguf
+  silently runs on CPU.
+- Named instances = the working memory agents share: `instances_create` mints
+  `mindsmith://<type>/<id>`; types are `plan` (persistent roadmap — needs-wiring checked at the
+  door, `setGivens` reopens exactly what USED a changed premise, cause named), `dialectic` (the
+  living debate — witness-gated), `notepad` (attributed notes). Every write carries `agent`;
+  a write without one is a typed refusal. One `.sgp` zip per instance = the wire format.
+- Refusals are data, not errors: unknown action, missing agent, a gate that says no, a
+  needs-hole in a plan batch — each comes back typed and NAMED, for the agent to act on.
+- What is NOT claimed: see the honesty page — every retired claim is listed, maturity is
+  per-feature, nothing is field-adopted yet.
+
+## Docs
+
+- [README.md](README.md): quickstart (60s), the cold-start transcript, instances, license FAQ
+- Features: https://9pings.github.io/mindsmith/features.html
+- Honesty / maturity / retired claims: https://9pings.github.io/mindsmith/honesty.html
+- Engine docs (skynet-graph): https://github.com/9pings/skynet-graph — usage, architecture,
+  API, plugins, strategies, CAPABILITIES (the measured claims live there)
+
+## Papers
+
+- Defeasible Library Learning: https://doi.org/10.5281/zenodo.21201723
+- Sound online growth of a typed isa lattice: https://doi.org/10.5281/zenodo.21201877
