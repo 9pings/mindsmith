@@ -61,6 +61,10 @@
 git clone https://github.com/9pings/mindsmith && cd mindsmith
 npm install && npm test                     # GPU-free suite
 
+# 0 — the onboarding diagnostic — run it FIRST; every non-ok line names its fix
+#     (engine, gguf runtime, GPU really reachable incl. the WSL trap, room, port, escalation):
+mindsmith doctor
+
 # 1 — MCP tools for an agent host (Claude Code, any MCP client) — the instance
 #     service (dialectic · plan · notepad workspaces) is on by default:
 claude mcp add mindsmith -- mindsmith mcp
