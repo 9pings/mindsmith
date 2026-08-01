@@ -108,6 +108,8 @@ ops readout (no key, no query content).
 
 ```console
 $ npm install mindsmith            # 137 packages in 13s — no build step, no compiler
+$ npx mindsmith doctor             # the onboarding diagnostic — every non-ok line NAMES its fix
+  ✓ node · ✓ engine · ! gpu-wsl (→ export LD_LIBRARY_PATH=…) · ✓ port 4747 …
 $ npx mindsmith rooms list
 (empty room: sgc — import a .sgc, or forge one: sg forge …)
 $ LLM_BASE=http://localhost:8080/v1 npx mindsmith mcp
