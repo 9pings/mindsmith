@@ -103,6 +103,19 @@ The demo and the test suite live in the [repo](https://github.com/9pings/mindsmi
 npm tarball — `git clone` for those; npm is for *running* the appliance. `GET /healthz` is the
 ops readout (no key, no query content).
 
+**Cold start, verified** (2026-08-01, fresh directory, packed tarballs `mindsmith 0.2.1` +
+`skynet-graph 1.4.0` — the exact bytes npm serves after the next publish):
+
+```console
+$ npm install mindsmith            # 137 packages in 13s — no build step, no compiler
+$ npx mindsmith rooms list
+(empty room: sgc — import a .sgc, or forge one: sg forge …)
+$ LLM_BASE=http://localhost:8080/v1 npx mindsmith mcp
+mindsmith mcp ready — tools: ask, drift, metrics, lattice_load, critique,
+  self_consistency, zoom, methods_describe, lattice_rings, trace_tail,
+  dialectic_* · notepad_* · plan_* (incl. plan_setGivens) · instances_*   # 30 tools
+```
+
 ## Named instances — the working memory your agents share
 
 The instance service is the reason MindSmith exists as its own package. A **type descriptor**
@@ -113,7 +126,7 @@ every type gets the same guarantees:
 | Type | What it is | Typed actions (each also a generated MCP tool) |
 |---|---|---|
 | `dialectic` | the LIVING debate — C9 as a workspace agents feed over days | `addArguments` (evidence grows the pool) · `addViewpoint` (a new point explored against the *grown* pool) · `verdict` · `state` · `brief` (the judgment dossier + `judgePrompt`) |
-| `plan` | the persistent roadmap | `addSteps` (needs-wiring checked at the door — a step needing what nobody produces refuses the whole batch, *named*) · `complete` / `reopen` (guarded, with reason) · `snapshot` (frontier = actionable now) · `sync` (a typed delta you apply verbatim to your host's task list — `reopen` included, the op no host does natively) |
+| `plan` | the persistent roadmap | `addSteps` (needs-wiring checked at the door — a step needing what nobody produces refuses the whole batch, *named*) · `complete` / `reopen` (guarded, with reason) · `setGivens` (change a premise → every step that USED it reopens, transitively, cause named — nothing else moves) · `snapshot` (frontier = actionable now) · `sync` (a typed delta you apply verbatim to your host's task list — `reopen` included, the op no host does natively) |
 | `notepad` | shared state-memory | `note` · `recall` (every note carries its writer) |
 
 What holds for every type, by construction:
@@ -300,6 +313,15 @@ The engine ships two companion preprints (open access, Zenodo, with bit-replayab
 artifacts): **Defeasible Library Learning** —
 [10.5281/zenodo.21201723](https://doi.org/10.5281/zenodo.21201723) — and **Sound online growth
 of a typed *isa* lattice** — [10.5281/zenodo.21201877](https://doi.org/10.5281/zenodo.21201877).
+
+## License FAQ (the one question everyone asks)
+
+**It's AGPL — can my company use it?** Running MindSmith *locally* — as your model's proxy,
+your agent's MCP tools, your rooms — is just use; the AGPL's network clause binds you when you
+offer the software itself as a service to others, and then it asks you to share your
+modifications, not your data or your prompts. Your conversations, rooms and instances never
+leave your machine either way. Sole-author copyright means other licensing terms are a
+conversation, not a fork: ask.
 
 ---
 
