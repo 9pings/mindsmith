@@ -65,6 +65,11 @@ test('GO generation: one typed tool per action + the socle; schemas derive from 
 	const vp = tools.find(( t ) => t.name === 'dialectic_addViewpoint' );
 	assert.ok(vp.inputSchema.required.includes('text') && !vp.inputSchema.required.includes('side'),
 		"'string?' input spec = optional field");
+	const pc = tools.find(( t ) => t.name === 'plan_complete' );
+	assert.ok(!('type' in pc.inputSchema.properties.value),
+		"'any?' input spec derives an UNCONSTRAINED schema — a served answer is any JSON value");
+	assert.ok(pc.inputSchema.required.includes('step') && !pc.inputSchema.required.includes('value'),
+		"'any?' stays optional; 'string' stays required");
 	rt.close();
 });
 
