@@ -2,7 +2,8 @@
 
 > An external reasoning layer for your LOCAL LLM, as an appliance: an OpenAI-compatible proxy,
 > an MCP tool surface (30 tools), and local `.sgc` rooms of verified knowledge. Local-first —
-> your prompts, rooms and instances never leave the machine. AGPL-3.0-or-later, Node 18+,
+> your prompts, rooms and instances stay local; the only egress is the escalation endpoint
+> you explicitly configure. AGPL-3.0-or-later, Node 18+,
 > no build step. The engine is the `skynet-graph` npm package; mindsmith is how you RUN it.
 
 Key facts an agent should know before using this package:
