@@ -119,7 +119,9 @@ $ npx mindsmith rooms list
 $ LLM_BASE=http://localhost:8080/v1 npx mindsmith mcp
 mindsmith mcp ready — tools: ask, drift, metrics, lattice_load, critique,
   self_consistency, zoom, methods_describe, lattice_rings, trace_tail,
-  dialectic_* · notepad_* · plan_* (incl. plan_setGivens) · instances_*   # 30 tools
+  dialectic_* · notepad_* · plan_* (incl. plan_setGivens) · debate_* (incl. the E5
+  dedupe-merge mergeInto/disputeMerge/prevalence) · theme_* (witnessed news-stories
+  governance) · instances_*                                               # 50 tools
 ```
 
 ## Named instances — the working memory your agents share
@@ -134,6 +136,8 @@ every type gets the same guarantees:
 | `dialectic` | the LIVING debate — C9 as a workspace agents feed over days | `addArguments` (evidence grows the pool) · `addViewpoint` (a new point explored against the *grown* pool) · `verdict` · `state` · `brief` (the judgment dossier + `judgePrompt`) |
 | `plan` | the persistent roadmap | `addSteps` (needs-wiring checked at the door — a step needing what nobody produces refuses the whole batch, *named*) · `complete` / `reopen` (guarded, with reason) · `setGivens` (change a premise → every step that USED it reopens, transitively, cause named — nothing else moves) · `snapshot` (frontier = actionable now) · `sync` (a typed delta you apply verbatim to your host's task list — `reopen` included, the op no host does natively) |
 | `notepad` | shared state-memory | `note` · `recall` (every note carries its writer) |
+| `debate` | the SCULPTABLE argument corpus (the living sculpt v2) | `addArguments` · `cut` (a rebuttal must name a live witness — refused otherwise) · `dispute` (a cut is reversible; multi-attacker provenance is a list) · **`mergeInto`** (the E5 dedupe-merge: a defeasible witnessed same-side merge — the duplicate counts once, keeps its identity) · **`disputeMerge`** ("that is not what I said" — one local write, the tally returns) · **`prevalence`** (the derived totalLinked, a readout that follows disputes) · `verdict` · `state` · `generalize` / `segment` (the lattice bricks) · `qbaf` |
+| `theme` | the GOVERNED news corpus (stories that can be corrected) | `addStories` · `attach` (membership only enters with a **witness** — refused named otherwise) · `dispute` (local attributed retraction) · `mergeStories` (non-destructive: ONE defeasible fact, members untouched — their effective story is a readout of the merge chain) · `disputeMerge` (one write reverts every member) · `state` / `story` / `membership` ("why is this item here") / `orphans` |
 
 What holds for every type, by construction:
 

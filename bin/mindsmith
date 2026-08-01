@@ -14,7 +14,7 @@
 //                             same verified stock + escalation; stdout = protocol.
 //                             Register:  claude mcp add mindsmith -- mindsmith mcp --routing <config.json>
 //                             + the INSTANCE SERVICE (on by default): named persistent graph instances
-//                             (notepad, dialectic) as typed tools generated from their descriptors —
+//                             (notepad, dialectic, plan, debate, theme) as typed tools generated from their descriptors —
 //                             `<type>_<action>` + instances_{create,search,fork,delete,revisions,sync}.
 //                             --instances <dir> (conf instances.dir, default ~/.mindsmith/instances) ·
 //                             --placement worker|in-proc (conf instances.placement, default worker) ·
@@ -177,7 +177,9 @@ function buildInstancesRuntime( o ) {
 		descriptors: {
 			notepad: require.resolve('skynet-graph/plugins/notepad/descriptor.js'),
 			dialectic: require.resolve('skynet-graph/plugins/critical-mind/descriptor.js'),
-			plan: require.resolve('skynet-graph/plugins/planner/descriptor.js')
+			plan: require.resolve('skynet-graph/plugins/planner/descriptor.js'),
+			debate: require.resolve('skynet-graph/plugins/debate/descriptor.js'),
+			theme: require.resolve('skynet-graph/plugins/theme/descriptor.js')
 		}
 	});
 }
