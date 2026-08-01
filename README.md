@@ -66,6 +66,10 @@ npm install node-llama-cpp
 # On WSL, export this or the gguf silently falls back to CPU:
 export LD_LIBRARY_PATH=/usr/lib/wsl/lib:/usr/lib/x86_64-linux-gnu
 
+# 0 — the onboarding diagnostic. Run it FIRST — every non-ok line NAMES its fix
+#     (engine · gguf runtime · GPU really reachable, incl. the WSL trap above · room · port · escalation):
+mindsmith doctor
+
 # 1 — serve. Escalation is ONE of: an embedded gguf, an OpenAI endpoint, or an N-tier routing config.
 FRONTIER_MODEL=/path/model.gguf mindsmith serve --room ./sgc
 # → mindsmith → http://127.0.0.1:4747/v1   (OpenAI-compatible, binds 127.0.0.1)
@@ -81,7 +85,7 @@ claude mcp add mindsmith -- mindsmith mcp
 # the INSTANCE SERVICE is on by default: your agent can now
 #   instances_create {type:"dialectic", seed:{topic:"..."}, agent:"claude-1"}   → mindsmith://dialectic/dialectic-1
 #   dialectic_addArguments · dialectic_addViewpoint · dialectic_state · dialectic_brief
-#   plan_addSteps · plan_complete · plan_reopen · plan_sync    (the persistent roadmap)
+#   plan_addSteps · plan_complete · plan_reopen · plan_setGivens · plan_sync    (the persistent roadmap)
 #   notepad_note · notepad_recall                              (shared state-memory)
 #   instances_search · instances_fork · instances_revisions (who wrote what) · instances_sync
 # plus the reasoning toolset: ask · critique · self_consistency · zoom · drift · metrics ·
